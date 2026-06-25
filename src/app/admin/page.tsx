@@ -7,17 +7,30 @@ import { useCallback, useEffect, useRef, useState } from "react";
 type ReservationRecord = {
   id: string;
   activity: string;
-  preferredDate: string;
+  preferredDate: string | null;
   fullName: string;
   phone: string;
   guests: number;
   hotelLocation: string | null;
   message: string | null;
+  activities: string | null;
+  totalPrice: number | null;
   adminNote: string | null;
   status: string;
   createdAt: string;
   updatedAt: string;
 };
+
+type ActivityItem = { name: string; price: number; mode: string };
+
+function parseActivities(raw: string | null): ActivityItem[] {
+  if (!raw) return [];
+  try {
+    return JSON.parse(raw) as ActivityItem[];
+  } catch {
+    return [];
+  }
+}
 
 const STATUS_OPTIONS = ["PENDING", "CONFIRMED", "CANCELLED"] as const;
 
@@ -160,59 +173,56 @@ export default function AdminDashboardPage() {
               <table className="min-w-full text-sm">
                 <thead className="bg-brand-navy/5 text-left text-brand-navy/60">
                   <tr>
-                    <th className="px-4 py-3 font-medium">Activity</th>
-                    <th className="px-4 py-3 font-medium">Date</th>
+                    <th className="px-4 py-3 font-medium">Activities</th>
                     <th className="px-4 py-3 font-medium">Name</th>
                     <th className="px-4 py-3 font-medium">Phone</th>
                     <th className="px-4 py-3 font-medium">Guests</th>
-                    <th className="px-4 py-3 font-medium">Hotel</th>
-                    <th className="px-4 py-3 font-medium">Message</th>
+                    <th className="px-4 py-3 font-medium">Total</th>
                     <th className="px-4 py-3 font-medium">Status</th>
                     <th className="px-4 py-3 font-medium">Note</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-brand-navy/5">
-                  {reservations.map((r) => (
+                  {reservations.map((r) => {
+                    const items = parseActivities(r.activities);
+                    return (
                     <tr key={r.id} className="hover:bg-brand-navy/[0.02]">
-                      <td className="px-4 py-3 font-medium text-brand-navy">
-                        {r.activity}
+                      <td className="px-4 py-3 text-brand-navy">
+                        {items.length > 0 ? (
+                          <ul className="space-y-0.5">
+                            {items.map((item, i) => (
+                              <li key={i} className="text-xs">
+                                <span className="font-medium">{item.name}</span>
+                                <span className="text-brand-navy/50">
+                                  {" "}
+                                  — ${item.price} {item.mode === "flat" ? "flat" : "/guest"}
+                                </span>
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <span className="text-brand-navy/80">{r.activity}</span>
+                        )}
                       </td>
-                      <td className="px-4 py-3 text-brand-navy/80">
-                        {new Date(r.preferredDate).toLocaleDateString()}
-                      </td>
-                      <td className="px-4 py-3 text-brand-navy/80">
-                        {r.fullName}
-                      </td>
+                      <td className="px-4 py-3 text-brand-navy/80">{r.fullName}</td>
                       <td className="px-4 py-3">
-                        <a
-                          href={`tel:${r.phone}`}
-                          className="text-brand-aqua hover:underline"
-                        >
+                        <a href={`tel:${r.phone}`} className="text-brand-aqua hover:underline">
                           {r.phone}
                         </a>
                       </td>
-                      <td className="px-4 py-3 text-brand-navy/80">
-                        {r.guests}
-                      </td>
-                      <td className="px-4 py-3 text-brand-navy/60">
-                        {r.hotelLocation || "—"}
-                      </td>
-                      <td className="max-w-[200px] truncate px-4 py-3 text-brand-navy/60">
-                        {r.message || "—"}
+                      <td className="px-4 py-3 text-brand-navy/80">{r.guests}</td>
+                      <td className="px-4 py-3 font-semibold text-brand-navy">
+                        {r.totalPrice != null ? `$${r.totalPrice}` : "—"}
                       </td>
                       <td className="px-4 py-3">
                         <select
                           value={r.status}
-                          onChange={(e) =>
-                            updateStatus(r.id, e.target.value)
-                          }
+                          onChange={(e) => updateStatus(r.id, e.target.value)}
                           disabled={updatingId === r.id}
                           className={`rounded-full px-3 py-1 text-xs font-semibold ${statusColor(r.status)} cursor-pointer border-0 focus:ring-2 focus:ring-brand-aqua/30 focus:outline-none`}
                         >
                           {STATUS_OPTIONS.map((s) => (
-                            <option key={s} value={s}>
-                              {s}
-                            </option>
+                            <option key={s} value={s}>{s}</option>
                           ))}
                         </select>
                       </td>
@@ -230,14 +240,17 @@ export default function AdminDashboardPage() {
                         />
                       </td>
                     </tr>
-                  ))}
+                  );
+                  })}
                 </tbody>
               </table>
             </div>
 
             {/* Mobile cards */}
             <div className="space-y-4 md:hidden">
-              {reservations.map((r) => (
+              {reservations.map((r) => {
+                const items = parseActivities(r.activities);
+                return (
                 <div
                   key={r.id}
                   className="rounded-xl border border-brand-navy/10 bg-white p-4 shadow-sm"
@@ -245,11 +258,19 @@ export default function AdminDashboardPage() {
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <h3 className="font-semibold text-brand-navy">
-                        {r.activity}
-                      </h3>
-                      <p className="text-sm text-brand-navy/60">
                         {r.fullName}
-                      </p>
+                      </h3>
+                      {items.length > 0 ? (
+                        <ul className="mt-1 space-y-0.5">
+                          {items.map((item, i) => (
+                            <li key={i} className="text-xs text-brand-navy/70">
+                              {item.name} — ${item.price} {item.mode === "flat" ? "flat" : "/guest"}
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-sm text-brand-navy/60">{r.activity}</p>
+                      )}
                     </div>
                     <select
                       value={r.status}
@@ -258,65 +279,48 @@ export default function AdminDashboardPage() {
                       className={`rounded-full px-3 py-1 text-xs font-semibold ${statusColor(r.status)} cursor-pointer border-0 focus:ring-2 focus:ring-brand-aqua/30 focus:outline-none`}
                     >
                       {STATUS_OPTIONS.map((s) => (
-                        <option key={s} value={s}>
-                          {s}
-                        </option>
+                        <option key={s} value={s}>{s}</option>
                       ))}
                     </select>
                   </div>
                   <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
                     <div>
-                      <span className="text-brand-navy/50">Date:</span>{" "}
-                      <span className="text-brand-navy/80">
-                        {new Date(r.preferredDate).toLocaleDateString()}
-                      </span>
+                      <span className="text-brand-navy/50">Phone:</span>{" "}
+                      <a href={`tel:${r.phone}`} className="text-brand-aqua">{r.phone}</a>
                     </div>
                     <div>
                       <span className="text-brand-navy/50">Guests:</span>{" "}
                       <span className="text-brand-navy/80">{r.guests}</span>
                     </div>
                     <div>
-                      <span className="text-brand-navy/50">Phone:</span>{" "}
-                      <a
-                        href={`tel:${r.phone}`}
-                        className="text-brand-aqua"
-                      >
-                        {r.phone}
-                      </a>
-                    </div>
-                    <div>
-                      <span className="text-brand-navy/50">Hotel:</span>{" "}
-                      <span className="text-brand-navy/60">
-                        {r.hotelLocation || "—"}
+                      <span className="text-brand-navy/50">Total:</span>{" "}
+                      <span className="font-semibold text-brand-navy">
+                        {r.totalPrice != null ? `$${r.totalPrice}` : "—"}
                       </span>
                     </div>
-                    {r.message && (
-                      <div className="col-span-2">
-                        <span className="text-brand-navy/50">Message:</span>{" "}
-                        <span className="text-brand-navy/60">
-                          {r.message}
-                        </span>
-                      </div>
-                    )}
-                    <div className="col-span-2 mt-1">
-                      <input
-                        type="text"
-                        defaultValue={r.adminNote || ""}
-                        placeholder="Admin note..."
-                        onBlur={(e) => {
-                          if (e.target.value !== (r.adminNote || "")) {
-                            updateAdminNote(r.id, e.target.value);
-                          }
-                        }}
-                        className="w-full rounded border border-brand-navy/10 px-2 py-1 text-sm text-brand-navy focus:border-brand-aqua focus:ring-1 focus:ring-brand-aqua/20 focus:outline-none"
-                      />
+                    <div>
+                      <span className="text-brand-navy/50">Created:</span>{" "}
+                      <span className="text-brand-navy/60">
+                        {new Date(r.createdAt).toLocaleDateString()}
+                      </span>
                     </div>
                   </div>
-                  <p className="mt-3 text-xs text-brand-navy/40">
-                    {new Date(r.createdAt).toLocaleString()}
-                  </p>
+                  <div className="mt-1">
+                    <input
+                      type="text"
+                      defaultValue={r.adminNote || ""}
+                      placeholder="Admin note..."
+                      onBlur={(e) => {
+                        if (e.target.value !== (r.adminNote || "")) {
+                          updateAdminNote(r.id, e.target.value);
+                        }
+                      }}
+                      className="w-full rounded border border-brand-navy/10 px-2 py-1 text-sm text-brand-navy focus:border-brand-aqua focus:ring-1 focus:ring-brand-aqua/20 focus:outline-none"
+                    />
+                  </div>
                 </div>
-              ))}
+              );
+              })}
             </div>
           </>
         )}

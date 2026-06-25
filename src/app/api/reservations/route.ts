@@ -2,36 +2,32 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { activities } from "@/lib/activities";
 
-const ALLOWED_ACTIVITIES = activities.map((a) => a.name);
+const ALLOWED_SLUGS = new Set(activities.map((a) => a.slug));
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const {
-      activity,
-      preferredDate,
-      fullName,
-      phone,
-      guests,
-      hotelLocation,
-      message,
-    } = body;
+    const { selectedSlugs, guests, fullName, phone } = body;
 
     const errors: string[] = [];
+    const selected: typeof activities = [];
 
-    if (!activity || typeof activity !== "string") {
-      errors.push("Activity is required.");
-    } else if (!ALLOWED_ACTIVITIES.includes(activity.trim())) {
-      errors.push("Invalid activity selection.");
+    if (!Array.isArray(selectedSlugs) || selectedSlugs.length === 0) {
+      errors.push("Select at least one activity.");
+    } else {
+      for (const slug of selectedSlugs) {
+        if (!ALLOWED_SLUGS.has(slug)) {
+          errors.push(`Unknown activity: ${slug}`);
+          continue;
+        }
+        const activity = activities.find((a) => a.slug === slug)!;
+        selected.push(activity);
+      }
     }
 
-    if (!preferredDate) {
-      errors.push("Preferred date is required.");
-    } else {
-      const date = new Date(preferredDate);
-      if (isNaN(date.getTime())) {
-        errors.push("Invalid preferred date.");
-      }
+    const guestCount = Number(guests);
+    if (!guests || isNaN(guestCount) || guestCount < 1 || !Number.isInteger(guestCount)) {
+      errors.push("Number of guests must be a positive whole number.");
     }
 
     if (!fullName || typeof fullName !== "string" || !fullName.trim()) {
@@ -42,24 +38,27 @@ export async function POST(request: Request) {
       errors.push("Phone is required.");
     }
 
-    const guestCount = Number(guests);
-    if (!guests || isNaN(guestCount) || guestCount < 1 || !Number.isInteger(guestCount)) {
-      errors.push("Number of guests must be a positive whole number.");
-    }
-
     if (errors.length > 0) {
       return NextResponse.json({ error: errors.join(" ") }, { status: 400 });
     }
 
+    let totalPrice = 0;
+    const activityList: { name: string; price: number; mode: string }[] = [];
+
+    for (const a of selected) {
+      const price = a.pricingMode === "flat" ? a.basePriceUsd : a.basePriceUsd * guestCount;
+      totalPrice += price;
+      activityList.push({ name: a.name, price: a.basePriceUsd, mode: a.pricingMode });
+    }
+
     const reservation = await prisma.reservation.create({
       data: {
-        activity: activity.trim(),
-        preferredDate: new Date(preferredDate),
+        activity: selected.map((a) => a.name).join(", "),
+        activities: JSON.stringify(activityList),
+        totalPrice,
+        guests: guestCount,
         fullName: fullName.trim(),
         phone: phone.trim(),
-        guests: guestCount,
-        hotelLocation: hotelLocation?.trim() || null,
-        message: message?.trim() || null,
         status: "PENDING",
       },
     });
@@ -71,29 +70,26 @@ export async function POST(request: Request) {
         await resend.emails.send({
           from: "Graquamarine <reservations@graquamarine.com>",
           to: process.env.RESERVATION_EMAIL_TO,
-          subject: `New Reservation: ${reservation.activity}`,
+          subject: `New Reservation — ${selected.length} activity(s)`,
           text: [
-            `Activity: ${reservation.activity}`,
-            `Date: ${reservation.preferredDate.toISOString().split("T")[0]}`,
-            `Name: ${reservation.fullName}`,
-            `Phone: ${reservation.phone}`,
-            `Guests: ${reservation.guests}`,
-            reservation.hotelLocation
-              ? `Hotel/Pickup: ${reservation.hotelLocation}`
-              : null,
-            reservation.message ? `Message: ${reservation.message}` : null,
+            `Activities:`,
+            ...activityList.map(
+              (a) => `  - ${a.name} ($${a.price} ${a.mode === "flat" ? "flat" : "per guest"})`
+            ),
+            `Guests: ${guestCount}`,
+            `Total: $${totalPrice}`,
+            `Name: ${fullName.trim()}`,
+            `Phone: ${phone.trim()}`,
             `Created: ${reservation.createdAt.toISOString()}`,
-          ]
-            .filter(Boolean)
-            .join("\n"),
+          ].join("\n"),
         });
       } catch {
-        // Email notification failed silently — reservation was still saved
+        // Email notification failed silently
       }
     }
 
     return NextResponse.json(
-      { success: true, id: reservation.id },
+      { success: true, id: reservation.id, totalPrice },
       { status: 201 }
     );
   } catch (error) {
