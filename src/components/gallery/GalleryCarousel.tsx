@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 const galleryImages = [
@@ -15,43 +15,53 @@ const galleryImages = [
 const AUTOPLAY_MS = 4000;
 
 export function GalleryCarousel() {
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [slideWidth, setSlideWidth] = useState(0);
+  const [visibleCount, setVisibleCount] = useState(1);
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
 
-  const scrollPrev = useCallback(() => {
-    if (!scrollRef.current) return;
-    scrollRef.current.scrollBy({ left: -scrollRef.current.clientWidth, behavior: "smooth" });
-  }, []);
-
-  const scrollNext = useCallback(() => {
-    if (!scrollRef.current) return;
-    const container = scrollRef.current;
-    const maxScroll = container.scrollWidth - container.clientWidth;
-    if (container.scrollLeft + container.clientWidth >= maxScroll - 1) {
-      container.scrollTo({ left: 0, behavior: "smooth" });
-    } else {
-      container.scrollBy({ left: container.clientWidth, behavior: "smooth" });
-    }
+  const measure = useCallback(() => {
+    if (!viewportRef.current || !trackRef.current) return;
+    const firstSlide = trackRef.current.firstElementChild as HTMLElement | null;
+    if (!firstSlide) return;
+    const sw = firstSlide.offsetWidth;
+    const gap = 16; // Tailwind gap-4 = 16px
+    const vw = viewportRef.current.clientWidth;
+    const count = Math.max(1, Math.floor((vw + gap) / (sw + gap)));
+    setSlideWidth(sw);
+    setVisibleCount(count);
   }, []);
 
   useEffect(() => {
-    const id = setInterval(() => {
-      if (!scrollRef.current) return;
-      const container = scrollRef.current;
-      const maxScroll = container.scrollWidth - container.clientWidth;
-      if (container.scrollLeft + container.clientWidth >= maxScroll - 1) {
-        container.scrollTo({ left: 0, behavior: "smooth" });
-      } else {
-        container.scrollBy({ left: container.clientWidth, behavior: "smooth" });
-      }
-    }, AUTOPLAY_MS);
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [measure]);
+
+  const maxIndex = Math.max(0, galleryImages.length - visibleCount);
+
+  const goPrev = useCallback(() => {
+    setCurrentIndex((c) => (c <= 0 ? maxIndex : c - 1));
+  }, [maxIndex]);
+
+  const goNext = useCallback(() => {
+    setCurrentIndex((c) => (c >= maxIndex ? 0 : c + 1));
+  }, [maxIndex]);
+
+  useEffect(() => {
+    const id = setInterval(goNext, AUTOPLAY_MS);
     return () => clearInterval(id);
-  }, []);
+  }, [goNext]);
+
+  const translateX = currentIndex * (slideWidth + 16); // +16 for gap-4
 
   return (
     <div className="mx-auto mt-10 max-w-5xl">
       <div className="flex items-center gap-3">
         <button
-          onClick={scrollPrev}
+          onClick={goPrev}
+          type="button"
           aria-label="Previous gallery images"
           className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-aqua text-white shadow-md transition hover:bg-brand-navy focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-aqua"
         >
@@ -59,10 +69,18 @@ export function GalleryCarousel() {
         </button>
 
         <div
-          ref={scrollRef}
-          className="min-w-0 flex-1 overflow-x-auto scroll-smooth"
+          ref={viewportRef}
+          className="min-w-0 flex-1 overflow-hidden"
         >
-          <div className="flex gap-4">
+          <div
+            ref={trackRef}
+            className="flex gap-4 transition-transform duration-500 ease-in-out"
+            style={{
+              transform: translateX > 0
+                ? `translateX(-${translateX}px)`
+                : undefined,
+            }}
+          >
             {galleryImages.map((img) => (
               <div
                 key={img.src}
@@ -81,7 +99,8 @@ export function GalleryCarousel() {
         </div>
 
         <button
-          onClick={scrollNext}
+          onClick={goNext}
+          type="button"
           aria-label="Next gallery images"
           className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-aqua text-white shadow-md transition hover:bg-brand-navy focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-aqua"
         >
