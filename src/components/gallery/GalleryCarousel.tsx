@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 const galleryImages = [
@@ -18,8 +18,11 @@ export function GalleryCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [slideWidth, setSlideWidth] = useState(0);
   const [visibleCount, setVisibleCount] = useState(1);
+  const [disableTransition, setDisableTransition] = useState(false);
   const viewportRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
+
+  const visibleCountRef = useRef(1);
 
   const measure = useCallback(() => {
     if (!viewportRef.current || !trackRef.current) return;
@@ -30,7 +33,17 @@ export function GalleryCarousel() {
     const vw = viewportRef.current.clientWidth;
     const count = Math.max(1, Math.floor((vw + gap) / (sw + gap)));
     setSlideWidth(sw);
-    setVisibleCount(count);
+    if (count !== visibleCountRef.current) {
+      visibleCountRef.current = count;
+      setVisibleCount(count);
+      setDisableTransition(true);
+      setCurrentIndex(count);
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setDisableTransition(false);
+        });
+      });
+    }
   }, []);
 
   useEffect(() => {
@@ -39,15 +52,54 @@ export function GalleryCarousel() {
     return () => window.removeEventListener("resize", measure);
   }, [measure]);
 
-  const maxIndex = Math.max(0, galleryImages.length - visibleCount);
+  const startIndex = visibleCount;
+  const realCount = galleryImages.length;
+  const appendTrigger = startIndex + realCount;
 
-  const goPrev = useCallback(() => {
-    setCurrentIndex((c) => (c <= 0 ? maxIndex : c - 1));
-  }, [maxIndex]);
+  const extendedImages = useMemo(() => {
+    const prepend = galleryImages.slice(-visibleCount);
+    const append = galleryImages.slice(0, visibleCount);
+    return [...prepend, ...galleryImages, ...append];
+  }, [visibleCount]);
+
+  const extendedMaxIndex = Math.max(0, extendedImages.length - visibleCount);
 
   const goNext = useCallback(() => {
-    setCurrentIndex((c) => (c >= maxIndex ? 0 : c + 1));
-  }, [maxIndex]);
+    setCurrentIndex((c) => Math.min(c + 1, extendedMaxIndex));
+  }, [extendedMaxIndex]);
+
+  const goPrev = useCallback(() => {
+    setCurrentIndex((c) => Math.max(c - 1, 0));
+  }, []);
+
+  useEffect(() => {
+    if (currentIndex >= appendTrigger) {
+      const snapTo = currentIndex - realCount;
+      const timer = setTimeout(() => {
+        setDisableTransition(true);
+        requestAnimationFrame(() => {
+          setCurrentIndex(snapTo);
+          requestAnimationFrame(() => {
+            setDisableTransition(false);
+          });
+        });
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+    if (currentIndex < startIndex) {
+      const snapTo = currentIndex + realCount;
+      const timer = setTimeout(() => {
+        setDisableTransition(true);
+        requestAnimationFrame(() => {
+          setCurrentIndex(snapTo);
+          requestAnimationFrame(() => {
+            setDisableTransition(false);
+          });
+        });
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [currentIndex, startIndex, appendTrigger, realCount]);
 
   useEffect(() => {
     const id = setInterval(goNext, AUTOPLAY_MS);
@@ -55,6 +107,8 @@ export function GalleryCarousel() {
   }, [goNext]);
 
   const translateX = currentIndex * (slideWidth + 16);
+
+  const firstVisibleImageIndex = (currentIndex - startIndex + realCount) % realCount;
 
   return (
     <div className="mx-auto mt-8 max-w-5xl">
@@ -74,7 +128,7 @@ export function GalleryCarousel() {
         >
           <div
             ref={trackRef}
-            className="flex gap-4 transition-transform duration-500 ease-in-out"
+            className={`flex gap-4 ${disableTransition ? "" : "transition-transform duration-500 ease-in-out"}`}
             style={{
               transform:
                 translateX > 0
@@ -82,9 +136,9 @@ export function GalleryCarousel() {
                   : undefined,
             }}
           >
-            {galleryImages.map((img) => (
+            {extendedImages.map((img, i) => (
               <div
-                key={img.src}
+                key={`slide-${i}`}
                 className="relative h-72 w-full shrink-0 overflow-hidden rounded-xl shadow-md sm:h-80 sm:w-1/2 lg:h-96 lg:w-1/3"
               >
                 <Image
@@ -109,19 +163,27 @@ export function GalleryCarousel() {
         </button>
       </div>
 
-      {maxIndex > 0 && (
+      {realCount > 0 && (
         <div className="mt-6 flex items-center justify-center gap-2">
-          {Array.from({ length: maxIndex + 1 }).map((_, i) => (
+          {Array.from({ length: realCount }).map((_, i) => (
             <button
               key={i}
               type="button"
               aria-label={`Go to gallery group ${i + 1}`}
               className={`h-2.5 w-2.5 rounded-full transition-all duration-300 ${
-                i === currentIndex
+                i === firstVisibleImageIndex
                   ? "bg-brand-aqua"
                   : "bg-brand-navy/20 hover:bg-brand-navy/40"
               }`}
-              onClick={() => setCurrentIndex(i)}
+              onClick={() => {
+                setDisableTransition(true);
+                setCurrentIndex(i + startIndex);
+                requestAnimationFrame(() => {
+                  requestAnimationFrame(() => {
+                    setDisableTransition(false);
+                  });
+                });
+              }}
             />
           ))}
         </div>
