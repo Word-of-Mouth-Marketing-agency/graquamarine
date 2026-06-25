@@ -123,7 +123,7 @@ export default function Home() {
             {activities.map((activity) => (
               <article
                 key={activity.slug}
-                className="overflow-hidden rounded-lg border border-brand-aqua/20 bg-white shadow-sm"
+                className="flex flex-col overflow-hidden rounded-lg border border-brand-aqua/20 bg-white shadow-sm"
               >
                 <div className="relative h-44 overflow-hidden">
                   <Image
@@ -134,7 +134,7 @@ export default function Home() {
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                   />
                 </div>
-                <div className="flex flex-col p-5">
+                <div className="flex flex-1 flex-col p-5">
                   <div className="flex items-start justify-between gap-3">
                     <h3 className="text-lg font-bold text-brand-navy">
                       {activity.name}
@@ -148,7 +148,7 @@ export default function Home() {
                   </p>
                   <Link
                     href="/activities"
-                    className="mt-4 inline-flex w-fit rounded-full bg-brand-aqua px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-navy hover:text-white"
+                    className="mt-auto pt-4 inline-flex w-fit rounded-full bg-brand-aqua px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-navy hover:text-white"
                   >
                     Reserve
                   </Link>

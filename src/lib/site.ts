@@ -4,7 +4,7 @@ export const siteConfig = {
   name: "Graquamarine",
   domain: "http://graquamarine.com/",
   displayDomain: "graquamarine.com",
-  location: "Hurghada, Egypt",
+  location: "Hurghada, Red Sea, Egypt",
   description:
     "Graquamarine offers diving, snorkeling, island trips, and private boat activities in Hurghada, Egypt.",
   phone: "+201002786616",

@@ -204,7 +204,7 @@ export default function ContactPage() {
         <div className="mx-auto max-w-6xl">
           <SectionHeading
             label="Our Location"
-            title="Based in Hurghada, Egypt"
+            title={`Based in ${siteConfig.location}`}
           />
           <div className="mt-10 overflow-hidden rounded-xl bg-brand-navy/5 ring-1 ring-brand-aqua/20">
             <div className="flex items-center justify-center bg-brand-navy/10 px-4 py-20 text-center">
