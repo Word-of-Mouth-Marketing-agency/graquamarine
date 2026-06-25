@@ -8,11 +8,11 @@ import { SocialIconLinks } from "@/components/layout/SocialIconLinks";
 
 export function Navbar() {
   const pathname = usePathname();
-  const isHome = pathname === "/";
-  const headerClassName = isHome
+  const isPublicPage = !pathname.startsWith("/admin");
+  const headerClassName = isPublicPage
     ? "absolute inset-x-0 top-0 z-40 border-b border-white/15 bg-transparent text-white"
     : "relative z-40 border-b border-brand-navy/20 bg-brand-navy text-white";
-  const navLinkClassName = isHome
+  const navLinkClassName = isPublicPage
     ? "text-white/90 hover:text-white"
     : "text-white/85 hover:text-white";
 
