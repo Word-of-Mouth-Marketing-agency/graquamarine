@@ -1,59 +1,65 @@
 import Image from "next/image";
 import Link from "next/link";
 import { siteConfig } from "@/lib/site";
-import { SocialIconLinks } from "@/components/layout/SocialIconLinks";
+import { FaFacebookF, FaInstagram, FaWhatsapp } from "react-icons/fa";
+
+const socialLinks = [
+  { label: "Facebook", href: siteConfig.facebookUrl, Icon: FaFacebookF },
+  { label: "Instagram", href: siteConfig.instagramUrl, Icon: FaInstagram },
+  { label: "WhatsApp", href: siteConfig.whatsappHref, Icon: FaWhatsapp },
+];
 
 export function Footer() {
   return (
     <>
-      <footer className="mt-auto bg-white">
-        <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 md:grid-cols-[1.2fr_1fr_1fr]">
-          <div>
+      <footer className="mt-auto border-t border-brand-navy/10 bg-white">
+        <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-4 py-8 sm:flex-row sm:justify-between">
+          <Link href="/" className="shrink-0">
             <Image
               src="/images/logo/site-logo.webp"
               alt={siteConfig.name}
-              width={200}
-              height={64}
-              className="h-36 w-auto"
+              width={160}
+              height={48}
+              className="h-20 w-auto sm:h-24"
             />
-          </div>
+          </Link>
 
-          <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-brand-aqua">
-              Navigation
-            </h3>
-            <ul className="mt-3 space-y-2 text-sm text-brand-navy/75">
-              {siteConfig.navigation.map((item) => (
-                <li key={item.href}>
-                  <Link href={item.href} className="hover:text-brand-aqua">
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <ul className="flex flex-wrap justify-center gap-5 text-sm font-medium text-brand-navy/75">
+            {siteConfig.navigation.map((item) => (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  className="transition hover:text-brand-aqua"
+                >
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
 
-          <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-brand-aqua">
-              Contact
-            </h3>
-            <div className="mt-3 space-y-2 text-sm text-brand-navy/75">
-              <p>{siteConfig.location}</p>
+          <div className="flex items-center gap-3">
+            {socialLinks.map(({ label, href, Icon }) => (
               <a
-                href={`tel:${siteConfig.phone}`}
-                className="block hover:text-brand-aqua"
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={label}
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-brand-navy/20 text-brand-navy/60 transition hover:border-brand-aqua hover:bg-brand-aqua hover:text-white"
               >
-                {siteConfig.displayPhone}
+                <Icon aria-hidden="true" className="h-4 w-4" />
               </a>
-              <SocialIconLinks iconClassName="border-brand-navy/20 text-brand-navy/60" />
-            </div>
+            ))}
           </div>
         </div>
       </footer>
 
       <div className="border-t border-brand-navy/10 bg-white">
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-2 px-4 py-5 text-center text-sm text-brand-navy/60 sm:flex-row sm:justify-between">
-          <p>&copy; {new Date().getFullYear()} {siteConfig.name}. All rights reserved.</p>
+          <p>
+            &copy; {new Date().getFullYear()} {siteConfig.name}. All rights
+            reserved.
+          </p>
           <p>
             Powered by{" "}
             <a
