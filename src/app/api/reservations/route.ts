@@ -1,13 +1,52 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { activities } from "@/lib/activities";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 
 const ALLOWED_SLUGS = new Set(activities.map((a) => a.slug));
+const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
+const RATE_LIMIT_MAX = 5;
+
+type ActivityItem = { name: string; price: number; mode: string };
+
+function normalizeOptionalString(value: unknown): string | null {
+  return typeof value === "string" && value.trim() ? value.trim() : null;
+}
 
 export async function POST(request: Request) {
   try {
+    const clientIp = getClientIp(request);
+    const rateLimit = checkRateLimit(`reservations:${clientIp}`, {
+      limit: RATE_LIMIT_MAX,
+      windowMs: RATE_LIMIT_WINDOW_MS,
+    });
+
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        { error: "Too many requests. Please try again later." },
+        {
+          status: 429,
+          headers: { "Retry-After": String(rateLimit.retryAfterSeconds) },
+        }
+      );
+    }
+
     const body = await request.json();
-    const { selectedSlugs, guests, fullName, phone } = body;
+    const {
+      selectedSlugs,
+      guests,
+      preferredDate,
+      fullName,
+      name,
+      phone,
+      hotelLocation,
+      message,
+      website,
+    } = body;
+
+    if (typeof website === "string" && website.trim()) {
+      return NextResponse.json({ success: true }, { status: 201 });
+    }
 
     const errors: string[] = [];
     const selected: typeof activities = [];
@@ -30,7 +69,9 @@ export async function POST(request: Request) {
       errors.push("Number of guests must be a positive whole number.");
     }
 
-    if (!fullName || typeof fullName !== "string" || !fullName.trim()) {
+    const reservationName = typeof fullName === "string" ? fullName : name;
+
+    if (!reservationName || typeof reservationName !== "string" || !reservationName.trim()) {
       errors.push("Full name is required.");
     }
 
@@ -38,12 +79,21 @@ export async function POST(request: Request) {
       errors.push("Phone is required.");
     }
 
+    const parsedPreferredDate =
+      typeof preferredDate === "string" && preferredDate
+        ? new Date(preferredDate)
+        : null;
+
+    if (!parsedPreferredDate || Number.isNaN(parsedPreferredDate.getTime())) {
+      errors.push("Preferred date is required.");
+    }
+
     if (errors.length > 0) {
       return NextResponse.json({ error: errors.join(" ") }, { status: 400 });
     }
 
     let totalPrice = 0;
-    const activityList: { name: string; price: number; mode: string }[] = [];
+    const activityList: ActivityItem[] = [];
 
     for (const a of selected) {
       const price = a.pricingMode === "flat" ? a.basePriceUsd : a.basePriceUsd * guestCount;
@@ -57,8 +107,11 @@ export async function POST(request: Request) {
         activities: JSON.stringify(activityList),
         totalPrice,
         guests: guestCount,
-        fullName: fullName.trim(),
+        preferredDate: parsedPreferredDate!,
+        fullName: reservationName.trim(),
         phone: phone.trim(),
+        hotelLocation: normalizeOptionalString(hotelLocation),
+        message: normalizeOptionalString(message),
         status: "PENDING",
       },
     });
@@ -70,7 +123,7 @@ export async function POST(request: Request) {
         await resend.emails.send({
           from: "Graquamarine <reservations@graquamarine.com>",
           to: process.env.RESERVATION_EMAIL_TO,
-          subject: `New Reservation — ${selected.length} activity(s)`,
+          subject: `New Reservation - ${selected.length} activity(s)`,
           text: [
             `Activities:`,
             ...activityList.map(
@@ -78,8 +131,11 @@ export async function POST(request: Request) {
             ),
             `Guests: ${guestCount}`,
             `Total: $${totalPrice}`,
-            `Name: ${fullName.trim()}`,
+            `Preferred date: ${parsedPreferredDate!.toISOString().slice(0, 10)}`,
+            `Name: ${reservationName.trim()}`,
             `Phone: ${phone.trim()}`,
+            `Hotel / pickup: ${normalizeOptionalString(hotelLocation) || "Not provided"}`,
+            `Message: ${normalizeOptionalString(message) || "Not provided"}`,
             `Created: ${reservation.createdAt.toISOString()}`,
           ].join("\n"),
         });

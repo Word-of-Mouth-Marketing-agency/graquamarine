@@ -2,8 +2,8 @@
 
 Water activities business website for Graquamarine in Hurghada, Egypt.
 
-The project has a complete UI using the brand palette — #01A3CB (aqua),
-#282262 (navy), and white — across Home, About, Activities, and Contact pages.
+The project has a complete UI using the brand palette - #01A3CB (aqua),
+#282262 (navy), and white - across Home, About, Activities, and Contact pages.
 A reservation backend with Prisma + PostgreSQL and an admin dashboard is in
 place. Production hosting is on a VPS.
 
@@ -47,11 +47,12 @@ on port 5432.
 ### Initialize the database
 
 ```bash
-npm run db:push
+npx prisma generate
+npx prisma migrate deploy
 ```
 
-This pushes the Prisma schema directly to the database. For production
-migrations, use `prisma migrate dev` / `prisma migrate deploy` instead.
+This applies committed Prisma migrations to the local Docker PostgreSQL
+database. Use `npm run db:push` only for throwaway local schema experiments.
 
 ### Start the dev server
 
@@ -67,7 +68,7 @@ Quick start after `npm install` and `.env` setup:
 
 ```bash
 docker compose up -d               # start PostgreSQL
-npm run db:push                     # sync schema
+npx prisma migrate deploy           # apply committed migrations
 npm run dev                         # start Next.js
 ```
 
@@ -85,10 +86,13 @@ npm run dev                         # start Next.js
 
 ## Scripts
 
-- `npm run dev`   — start local development
-- `npm run lint`  — run ESLint
-- `npm run build` — create production build
-- `npm run start` — run production server
+- `npm run dev` - start local development
+- `npm run lint` - run ESLint
+- `npm run build` - create production build
+- `npm run start` - run production server
+- `npm run db:generate` - regenerate Prisma Client
+- `npm run db:push` - push schema directly to a local database
+- `npm run db:studio` - open Prisma Studio
 
 ## Pages
 
@@ -103,11 +107,16 @@ npm run dev                         # start Next.js
 
 ## Reservation Flow
 
-1. User selects an activity and fills the reservation form on `/activities`.
-2. Form submits to `POST /api/reservations` with validation.
+1. User selects one or more activities and fills the reservation form on `/activities`.
+2. Form submits to `POST /api/reservations` with validation and honeypot spam handling.
 3. Reservation saved to PostgreSQL with `PENDING` status.
 4. Optional email notification via Resend if keys are configured.
 5. Admin manages reservations at `/admin`.
+
+Reservation fields: activities, guests, preferred date, full name, WhatsApp /
+phone, hotel / pickup location, and message / notes. The server computes total
+price itself: per-guest activities multiply by guests, while Private Boat is a
+flat one-time price.
 
 ## Admin Dashboard
 
@@ -116,6 +125,15 @@ npm run dev                         # start Next.js
 - Desktop table view. Mobile stacked cards.
 - Update status (Pending / Confirmed / Cancelled) and add internal notes.
 - Refresh button. Logout button.
+- Admin login is rate-limited by IP.
+
+## Spam Protection
+
+- `POST /api/reservations`, `POST /api/contact`, and `POST /api/admin/login`
+  use a simple in-memory IP rate limiter: 5 attempts per 10 minutes.
+- Reservation and contact forms include a hidden `website` honeypot field.
+- If the honeypot is filled, the API returns a success-like response without
+  creating a reservation or sending email.
 
 ## Environment Variables
 
@@ -135,7 +153,7 @@ If you see `PrismaClientInitializationError` with "Authentication failed for
 user graquamarine_user", the password in your `.env` `DATABASE_URL` does not
 match the local PostgreSQL user password.
 
-**Option A — Reset with Docker (recommended):**
+**Option A - Reset with Docker (recommended):**
 
 Stop the dev server, then recreate the database container:
 
@@ -151,14 +169,14 @@ Make sure your `.env` `DATABASE_URL` matches the Docker credentials
 DATABASE_URL="postgresql://graquamarine_user:graquamarine_local_password@localhost:5433/graquamarine"
 ```
 
-Then sync the schema:
+Then apply migrations:
 
 ```bash
-npm run db:push
+npx prisma migrate deploy
 npm run dev
 ```
 
-**Option B — Use your existing local PostgreSQL:**
+**Option B - Use your existing local PostgreSQL:**
 
 Keep your running PostgreSQL server. In psql as a superuser:
 
@@ -170,7 +188,7 @@ GRANT ALL PRIVILEGES ON DATABASE graquamarine TO graquamarine_user;
 GRANT ALL ON SCHEMA public TO graquamarine_user;
 ```
 
-Then run `npm run db:push && npm run dev`.
+Then run `npx prisma migrate deploy && npm run dev`.
 
 **Important:** Do not commit your `.env` file.
 
@@ -246,13 +264,8 @@ pm2 save
 pm2 startup
 ```
 
-If no migration exists yet (first deploy), create it:
-
-```bash
-npx prisma migrate dev --name init_reservations
-```
-
-Then use `prisma migrate deploy` for subsequent deploys.
+The initial migration is committed under `prisma/migrations`, so VPS deploys
+should use `npx prisma migrate deploy`.
 
 ### 5. Nginx reverse proxy
 
@@ -293,7 +306,7 @@ sudo certbot --nginx -d graquamarine.com -d www.graquamarine.com
 - Do not commit `.env` or `prisma/dev.db`.
 - Use a strong `ADMIN_PASSWORD`.
 - Set up PostgreSQL backups (`pg_dump` cron job).
-- Add rate limiting and CAPTCHA to the reservation form before heavy traffic.
+- Consider CAPTCHA before heavy traffic if spam increases.
 - Configure Resend DNS records if using email notifications.
 - Set `NODE_ENV=production` in the PM2 environment.
 
@@ -312,7 +325,7 @@ pm2 restart graquamarine
 ## Database
 
 - **Provider**: PostgreSQL (Prisma v5)
-- **Model**: `Reservation` — id, activity, preferredDate, fullName, phone, guests, hotelLocation, message, adminNote, status, timestamps
+- **Model**: `Reservation` - id, activity, activities JSON string, preferredDate, fullName, phone, guests, hotelLocation, message, totalPrice, adminNote, status enum, timestamps
 - **Migrations**: `npx prisma migrate dev` (create) / `npx prisma migrate deploy` (apply)
 - **Client**: `npx prisma generate`
 
@@ -323,7 +336,7 @@ Services and base prices live in `src/lib/activities.ts`.
 ## Future Work
 
 - Copy approval from brand owner.
-- Spam protection (rate limiting, CAPTCHA) on reservation form.
+- Consider CAPTCHA if spam becomes an issue.
 - SEO: sitemap, robots, structured data, local keywords.
 - PostgreSQL backups.
 - Resend/SMTP setup for production email notifications.

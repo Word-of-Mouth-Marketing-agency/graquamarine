@@ -16,8 +16,12 @@ function pricingLabel(mode: PricingMode): string {
 export function ReservationForm() {
   const [selectedSlugs, setSelectedSlugs] = useState<Set<string>>(new Set());
   const [guests, setGuests] = useState("1");
+  const [preferredDate, setPreferredDate] = useState("");
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
+  const [hotelLocation, setHotelLocation] = useState("");
+  const [message, setMessage] = useState("");
+  const [website, setWebsite] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
@@ -52,6 +56,11 @@ export function ReservationForm() {
       return;
     }
 
+    if (!preferredDate) {
+      setError("Preferred date is required.");
+      return;
+    }
+
     setSubmitting(true);
 
     try {
@@ -61,8 +70,12 @@ export function ReservationForm() {
         body: JSON.stringify({
           selectedSlugs: Array.from(selectedSlugs),
           guests: guestCount,
+          preferredDate,
           fullName,
           phone,
+          hotelLocation,
+          message,
+          website,
         }),
       });
 
@@ -76,8 +89,12 @@ export function ReservationForm() {
       setSuccess(true);
       setSelectedSlugs(new Set());
       setGuests("1");
+      setPreferredDate("");
       setFullName("");
       setPhone("");
+      setHotelLocation("");
+      setMessage("");
+      setWebsite("");
     } catch {
       setError("Network error. Please check your connection and try again.");
     } finally {
@@ -121,6 +138,19 @@ export function ReservationForm() {
       className="mt-8 grid gap-5 rounded-xl bg-white p-6 shadow-sm ring-1 ring-brand-aqua/20 sm:p-8"
       onSubmit={handleSubmit}
     >
+      <div className="hidden" aria-hidden="true">
+        <label htmlFor="reservationWebsite">Website</label>
+        <input
+          id="reservationWebsite"
+          name="website"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          value={website}
+          onChange={(e) => setWebsite(e.target.value)}
+        />
+      </div>
+
       <fieldset>
         <legend className={`${labelClass} mb-3`}>
           Select activities <span className="text-brand-aqua">*</span>
@@ -171,6 +201,21 @@ export function ReservationForm() {
         />
       </div>
 
+      <div>
+        <label className={labelClass} htmlFor="preferredDate">
+          Preferred date <span className="text-brand-aqua">*</span>
+        </label>
+        <input
+          id="preferredDate"
+          type="date"
+          className={inputClass}
+          value={preferredDate}
+          onChange={(e) => setPreferredDate(e.target.value)}
+          required
+          disabled={submitting}
+        />
+      </div>
+
       <div className="grid gap-5 sm:grid-cols-2">
         <div>
           <label className={labelClass} htmlFor="fullName">
@@ -200,6 +245,34 @@ export function ReservationForm() {
             disabled={submitting}
           />
         </div>
+      </div>
+
+      <div>
+        <label className={labelClass} htmlFor="hotelLocation">
+          Hotel / pickup location
+        </label>
+        <input
+          id="hotelLocation"
+          type="text"
+          className={inputClass}
+          value={hotelLocation}
+          onChange={(e) => setHotelLocation(e.target.value)}
+          disabled={submitting}
+        />
+      </div>
+
+      <div>
+        <label className={labelClass} htmlFor="reservationMessage">
+          Message / notes
+        </label>
+        <textarea
+          id="reservationMessage"
+          rows={4}
+          className={inputClass}
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          disabled={submitting}
+        />
       </div>
 
       {selectedSlugs.size > 0 && (

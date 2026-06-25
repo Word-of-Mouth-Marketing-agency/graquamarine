@@ -12,6 +12,7 @@ export function ContactForm() {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+  const [website, setWebsite] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
@@ -25,7 +26,7 @@ export function ContactForm() {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, phone, email, message }),
+        body: JSON.stringify({ name, phone, email, message, website }),
       });
 
       const data = await res.json();
@@ -40,6 +41,7 @@ export function ContactForm() {
       setPhone("");
       setEmail("");
       setMessage("");
+      setWebsite("");
     } catch {
       setError("Network error. Please check your connection and try again.");
     } finally {
@@ -86,6 +88,19 @@ export function ContactForm() {
       className="flex h-full flex-col justify-center gap-5 rounded-xl bg-white p-6 shadow-sm ring-1 ring-brand-aqua/20 sm:p-8"
       onSubmit={handleSubmit}
     >
+      <div className="hidden" aria-hidden="true">
+        <label htmlFor="contactWebsite">Website</label>
+        <input
+          id="contactWebsite"
+          name="website"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          value={website}
+          onChange={(e) => setWebsite(e.target.value)}
+        />
+      </div>
+
       <div>
         <label className={labelClass} htmlFor="contactName">
           Name <span className="text-brand-aqua">*</span>

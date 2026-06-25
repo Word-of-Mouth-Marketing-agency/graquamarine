@@ -2,7 +2,7 @@ import type { NavigationLink } from "@/types";
 
 export const siteConfig = {
   name: "Graquamarine",
-  domain: "http://graquamarine.com/",
+  domain: "https://graquamarine.com",
   displayDomain: "graquamarine.com",
   location: "Hurghada, Red Sea, Egypt",
   description:

@@ -7,19 +7,28 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum ReservationStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
 model Reservation {
   id             String   @id @default(cuid())
   activity       String
-  preferredDate  DateTime?
+  preferredDate  DateTime
   fullName       String
   phone          String
   guests         Int      @default(1)
   hotelLocation  String?
   message        String?
-  activities     String?
-  totalPrice     Int?
+  activities     String
+  totalPrice     Int
   adminNote      String?
-  status         String   @default("PENDING")
+  status         ReservationStatus @default(PENDING)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+
+  @@index([createdAt])
+  @@index([status])
 }

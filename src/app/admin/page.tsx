@@ -7,14 +7,14 @@ import { useCallback, useEffect, useRef, useState } from "react";
 type ReservationRecord = {
   id: string;
   activity: string;
-  preferredDate: string | null;
+  preferredDate: string;
   fullName: string;
   phone: string;
   guests: number;
   hotelLocation: string | null;
   message: string | null;
-  activities: string | null;
-  totalPrice: number | null;
+  activities: string;
+  totalPrice: number;
   adminNote: string | null;
   status: string;
   createdAt: string;
@@ -22,6 +22,7 @@ type ReservationRecord = {
 };
 
 type ActivityItem = { name: string; price: number; mode: string };
+type ReservationStatus = "PENDING" | "CONFIRMED" | "CANCELLED";
 
 function parseActivities(raw: string | null): ActivityItem[] {
   if (!raw) return [];
@@ -33,6 +34,13 @@ function parseActivities(raw: string | null): ActivityItem[] {
 }
 
 const STATUS_OPTIONS = ["PENDING", "CONFIRMED", "CANCELLED"] as const;
+
+function formatDate(value: string | null): string {
+  if (!value) return "-";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "-";
+  return date.toLocaleDateString();
+}
 
 function statusColor(status: string): string {
   switch (status) {
@@ -79,7 +87,7 @@ export default function AdminDashboardPage() {
     }
   }, [fetchReservations]);
 
-  async function updateStatus(id: string, status: string) {
+  async function updateStatus(id: string, status: ReservationStatus) {
     setUpdatingId(id);
     try {
       const res = await fetch(`/api/admin/reservations/${id}`, {
@@ -177,9 +185,13 @@ export default function AdminDashboardPage() {
                     <th className="px-4 py-3 font-medium">Name</th>
                     <th className="px-4 py-3 font-medium">Phone</th>
                     <th className="px-4 py-3 font-medium">Guests</th>
+                    <th className="px-4 py-3 font-medium">Date</th>
+                    <th className="px-4 py-3 font-medium">Pickup</th>
+                    <th className="px-4 py-3 font-medium">Message</th>
                     <th className="px-4 py-3 font-medium">Total</th>
                     <th className="px-4 py-3 font-medium">Status</th>
                     <th className="px-4 py-3 font-medium">Note</th>
+                    <th className="px-4 py-3 font-medium">Created</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-brand-navy/5">
@@ -195,7 +207,7 @@ export default function AdminDashboardPage() {
                                 <span className="font-medium">{item.name}</span>
                                 <span className="text-brand-navy/50">
                                   {" "}
-                                  — ${item.price} {item.mode === "flat" ? "flat" : "/guest"}
+                                  {" - "}${item.price} {item.mode === "flat" ? "flat" : "/guest"}
                                 </span>
                               </li>
                             ))}
@@ -211,13 +223,24 @@ export default function AdminDashboardPage() {
                         </a>
                       </td>
                       <td className="px-4 py-3 text-brand-navy/80">{r.guests}</td>
+                      <td className="px-4 py-3 text-brand-navy/80">
+                        {formatDate(r.preferredDate)}
+                      </td>
+                      <td className="px-4 py-3 text-brand-navy/70">
+                        {r.hotelLocation || "-"}
+                      </td>
+                      <td className="max-w-[180px] px-4 py-3 text-brand-navy/70">
+                        <span className="line-clamp-3">{r.message || "-"}</span>
+                      </td>
                       <td className="px-4 py-3 font-semibold text-brand-navy">
-                        {r.totalPrice != null ? `$${r.totalPrice}` : "—"}
+                        ${r.totalPrice}
                       </td>
                       <td className="px-4 py-3">
                         <select
                           value={r.status}
-                          onChange={(e) => updateStatus(r.id, e.target.value)}
+                          onChange={(e) =>
+                            updateStatus(r.id, e.target.value as ReservationStatus)
+                          }
                           disabled={updatingId === r.id}
                           className={`rounded-full px-3 py-1 text-xs font-semibold ${statusColor(r.status)} cursor-pointer border-0 focus:ring-2 focus:ring-brand-aqua/30 focus:outline-none`}
                         >
@@ -238,6 +261,9 @@ export default function AdminDashboardPage() {
                           }}
                           className="w-28 rounded border border-brand-navy/10 px-2 py-1 text-xs text-brand-navy focus:border-brand-aqua focus:ring-1 focus:ring-brand-aqua/20 focus:outline-none"
                         />
+                      </td>
+                      <td className="px-4 py-3 text-brand-navy/60">
+                        {formatDate(r.createdAt)}
                       </td>
                     </tr>
                   );
@@ -264,7 +290,7 @@ export default function AdminDashboardPage() {
                         <ul className="mt-1 space-y-0.5">
                           {items.map((item, i) => (
                             <li key={i} className="text-xs text-brand-navy/70">
-                              {item.name} — ${item.price} {item.mode === "flat" ? "flat" : "/guest"}
+                              {item.name} - ${item.price} {item.mode === "flat" ? "flat" : "/guest"}
                             </li>
                           ))}
                         </ul>
@@ -274,7 +300,9 @@ export default function AdminDashboardPage() {
                     </div>
                     <select
                       value={r.status}
-                      onChange={(e) => updateStatus(r.id, e.target.value)}
+                      onChange={(e) =>
+                        updateStatus(r.id, e.target.value as ReservationStatus)
+                      }
                       disabled={updatingId === r.id}
                       className={`rounded-full px-3 py-1 text-xs font-semibold ${statusColor(r.status)} cursor-pointer border-0 focus:ring-2 focus:ring-brand-aqua/30 focus:outline-none`}
                     >
@@ -293,17 +321,37 @@ export default function AdminDashboardPage() {
                       <span className="text-brand-navy/80">{r.guests}</span>
                     </div>
                     <div>
+                      <span className="text-brand-navy/50">Date:</span>{" "}
+                      <span className="text-brand-navy/80">
+                        {formatDate(r.preferredDate)}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-brand-navy/50">Pickup:</span>{" "}
+                      <span className="text-brand-navy/80">
+                        {r.hotelLocation || "-"}
+                      </span>
+                    </div>
+                    <div>
                       <span className="text-brand-navy/50">Total:</span>{" "}
                       <span className="font-semibold text-brand-navy">
-                        {r.totalPrice != null ? `$${r.totalPrice}` : "—"}
+                        ${r.totalPrice}
                       </span>
                     </div>
                     <div>
                       <span className="text-brand-navy/50">Created:</span>{" "}
                       <span className="text-brand-navy/60">
-                        {new Date(r.createdAt).toLocaleDateString()}
+                        {formatDate(r.createdAt)}
                       </span>
                     </div>
+                  </div>
+                  <div className="mt-3 rounded-lg bg-brand-navy/[0.03] p-3">
+                    <p className="text-xs font-medium text-brand-navy/50">
+                      Message / notes
+                    </p>
+                    <p className="mt-1 text-sm text-brand-navy/75">
+                      {r.message || "-"}
+                    </p>
                   </div>
                   <div className="mt-1">
                     <input
