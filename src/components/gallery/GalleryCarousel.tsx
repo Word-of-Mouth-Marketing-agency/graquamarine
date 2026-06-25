@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 const galleryImages = [
@@ -15,49 +15,71 @@ const galleryImages = [
 const AUTOPLAY_MS = 4000;
 
 export function GalleryCarousel() {
-  const [current, setCurrent] = useState(0);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
-  const prev = useCallback(() => {
-    setCurrent((c) => (c === 0 ? galleryImages.length - 1 : c - 1));
+  const scrollPrev = useCallback(() => {
+    if (!scrollRef.current) return;
+    scrollRef.current.scrollBy({ left: -scrollRef.current.clientWidth, behavior: "smooth" });
   }, []);
 
-  const next = useCallback(() => {
-    setCurrent((c) => (c + 1) % galleryImages.length);
+  const scrollNext = useCallback(() => {
+    if (!scrollRef.current) return;
+    const container = scrollRef.current;
+    const maxScroll = container.scrollWidth - container.clientWidth;
+    if (container.scrollLeft + container.clientWidth >= maxScroll - 1) {
+      container.scrollTo({ left: 0, behavior: "smooth" });
+    } else {
+      container.scrollBy({ left: container.clientWidth, behavior: "smooth" });
+    }
   }, []);
 
   useEffect(() => {
-    const id = setInterval(next, AUTOPLAY_MS);
+    const id = setInterval(() => {
+      if (!scrollRef.current) return;
+      const container = scrollRef.current;
+      const maxScroll = container.scrollWidth - container.clientWidth;
+      if (container.scrollLeft + container.clientWidth >= maxScroll - 1) {
+        container.scrollTo({ left: 0, behavior: "smooth" });
+      } else {
+        container.scrollBy({ left: container.clientWidth, behavior: "smooth" });
+      }
+    }, AUTOPLAY_MS);
     return () => clearInterval(id);
-  }, [next]);
+  }, []);
 
   return (
-    <div className="relative mx-auto mt-10 max-w-4xl">
-      <div className="relative h-[320px] overflow-hidden rounded-xl shadow-md sm:h-[400px]">
-        {galleryImages.map((img, i) => (
-          <Image
+    <div className="relative mx-auto mt-10 max-w-5xl">
+      <div
+        ref={scrollRef}
+        className="flex gap-4 overflow-x-hidden scroll-smooth"
+      >
+        {galleryImages.map((img) => (
+          <div
             key={img.src}
-            src={img.src}
-            alt={img.alt}
-            fill
-            className={`object-cover object-center transition-opacity duration-700 ${
-              i === current ? "opacity-100" : "opacity-0"
-            }`}
-            sizes="(max-width: 1024px) 100vw, 896px"
-          />
+            className="relative h-64 w-full shrink-0 overflow-hidden rounded-xl shadow-md sm:w-1/2 lg:w-1/3"
+          >
+            <Image
+              src={img.src}
+              alt={img.alt}
+              fill
+              className="object-cover object-center"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            />
+          </div>
         ))}
       </div>
 
       <button
-        onClick={prev}
-        aria-label="Previous gallery image"
-        className="absolute left-2 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-white/80 text-brand-navy shadow-md transition hover:bg-white hover:text-brand-aqua focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-aqua sm:left-4"
+        onClick={scrollPrev}
+        aria-label="Previous gallery images"
+        className="absolute left-2 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-brand-navy shadow-md transition hover:bg-brand-aqua hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-aqua sm:left-4"
       >
         <FaChevronLeft aria-hidden="true" className="h-5 w-5" />
       </button>
       <button
-        onClick={next}
-        aria-label="Next gallery image"
-        className="absolute right-2 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-white/80 text-brand-navy shadow-md transition hover:bg-white hover:text-brand-aqua focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-aqua sm:right-4"
+        onClick={scrollNext}
+        aria-label="Next gallery images"
+        className="absolute right-2 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-brand-navy shadow-md transition hover:bg-brand-aqua hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-aqua sm:right-4"
       >
         <FaChevronRight aria-hidden="true" className="h-5 w-5" />
       </button>
