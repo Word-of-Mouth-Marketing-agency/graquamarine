@@ -20,11 +20,11 @@ export function Footer() {
               alt={siteConfig.name}
               width={160}
               height={48}
-              className="h-20 w-auto sm:h-24"
+              className="h-28 w-auto sm:h-32"
             />
           </Link>
 
-          <ul className="flex flex-wrap justify-center gap-5 text-sm font-medium text-brand-navy/75">
+          <ul className="flex flex-wrap justify-center gap-5 text-base font-medium text-brand-navy/75">
             {siteConfig.navigation.map((item) => (
               <li key={item.href}>
                 <Link
