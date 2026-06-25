@@ -14,7 +14,7 @@ export function Footer() {
               alt={siteConfig.name}
               width={200}
               height={64}
-              className="h-32 w-auto"
+              className="h-36 w-auto"
             />
           </div>
 
