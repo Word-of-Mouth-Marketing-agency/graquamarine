@@ -23,34 +23,63 @@ place. Production hosting is on a VPS.
 npm install
 ```
 
-Copy `.env.example` to `.env` and set the variables. For local development
-you can use a local PostgreSQL instance or point to the VPS database:
-
-```
-DATABASE_URL="postgresql://graquamarine_user:STRONG_PASSWORD@localhost:5432/graquamarine"
-ADMIN_PASSWORD="replace-with-a-long-secure-password"
-```
-
-Initialize Prisma:
+Copy `.env.example` to `.env` and set the variables:
 
 ```bash
-npx prisma generate
-npx prisma migrate deploy          # apply existing migrations
+cp .env.example .env
 ```
 
-If this is the first time on a new database, create the initial migration:
+For local development, the defaults in `.env.example` match the
+`docker-compose.yml` configuration. Edit `.env` to set a custom
+`ADMIN_PASSWORD`.
+
+### Start PostgreSQL (Docker)
 
 ```bash
-npx prisma migrate dev --name init_reservations
+docker compose up -d
 ```
 
-Start the dev server:
+This starts a PostgreSQL 16 container with the database, user, and password
+configured to match the `.env.example` defaults.
+
+### Initialize the database
+
+```bash
+npm run db:push
+```
+
+This pushes the Prisma schema directly to the database. For production
+migrations, use `prisma migrate dev` / `prisma migrate deploy` instead.
+
+### Start the dev server
 
 ```bash
 npm run dev
 ```
 
 Open `http://localhost:3000`.
+
+## Local Admin Dashboard Testing
+
+Quick start after `npm install` and `.env` setup:
+
+```bash
+docker compose up -d               # start PostgreSQL
+npm run db:push                     # sync schema
+npm run dev                         # start Next.js
+```
+
+1. Submit a test reservation at `http://localhost:3000/activities`
+2. Open `http://localhost:3000/admin`
+3. Login with the `ADMIN_PASSWORD` from your `.env`
+4. You should see the submitted reservation in the dashboard
+5. Optional: browse the database with `npm run db:studio`
+
+**Important:**
+- Do not commit your `.env` file.
+- If using Docker, the DATABASE_URL must match the Docker credentials
+  (`graquamarine_user` / `local_dev_password` by default).
+- Production uses a separate VPS with its own PostgreSQL and env values.
 
 ## Scripts
 

@@ -1,0 +1,16 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: graquamarine-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: graquamarine
+      POSTGRES_USER: graquamarine_user
+      POSTGRES_PASSWORD: local_dev_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - graquamarine_pgdata:/var/lib/postgresql/data
+
+volumes:
+  graquamarine_pgdata:
