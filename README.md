@@ -7,12 +7,10 @@ The project now has a first homepage UI pass using the Graquamarine brand
 palette: #01A3CB (aqua), #282262 (navy), and white. Real contact
 details (phone, WhatsApp, Facebook, Instagram) are wired in, the hero uses a
 fading image slideshow, feature cards and activity cards show real photography,
-and section backgrounds use real imagery.
-
-The current homepage refinement uses a transparent non-sticky header over a
-90vh hero, real social icon links, simplified hero copy, hero image slideshow,
-real feature/activity card images, section background images, and an autoplay
-gallery carousel with real photos.
+and section backgrounds use real imagery. The About, Activities, and Contact
+pages have been redesigned to match the homepage visual style with shared
+PageHero and SectionHeading components, styled activity cards, a branded
+reservation form, contact cards, and a map placeholder.
 
 ## Stack
 
@@ -43,10 +41,10 @@ integrations begin.
 
 ## Pages
 
-- `/` - homepage with fading hero image slideshow, activity cards, gallery placeholder, and CTAs
-- `/about` - placeholder business story and safety notes
-- `/activities` - activity catalog and frontend-only reservation form
-- `/contact` - placeholder contact details
+- `/` - homepage with hero slideshow, feature cards, activity preview, autoplay gallery carousel, and pre-footer CTA
+- `/about` - brand story, value cards, and call-to-action matching the homepage style
+- `/activities` - full activity catalog with styled image cards and frontend-only reservation form
+- `/contact` - contact cards with real phone/social links, message form, map placeholder, and WhatsApp CTA
 
 ## Activity Data
 

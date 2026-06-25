@@ -2,18 +2,26 @@
 
 import { activities } from "@/lib/activities";
 
+const inputClass =
+  "mt-1 w-full rounded-lg border border-brand-navy/20 px-3 py-2.5 text-brand-navy placeholder:text-brand-navy/40 transition focus:border-brand-aqua focus:ring-2 focus:ring-brand-aqua/20 focus:outline-none";
+
+const labelClass = "block text-sm font-medium text-brand-navy";
+
 export function ReservationForm() {
   return (
-    <form className="mt-8 grid gap-4 rounded border border-slate-200 p-4">
+    <form
+      className="mt-8 grid gap-5 rounded-xl bg-white p-6 shadow-sm ring-1 ring-brand-aqua/20 sm:p-8"
+      onSubmit={(e) => e.preventDefault()}
+    >
       {/* TODO: Connect this form to the reservation backend/email workflow. */}
       <div>
-        <label className="block text-sm font-medium" htmlFor="activity">
+        <label className={labelClass} htmlFor="activity">
           Activity
         </label>
         <select
           id="activity"
           name="activity"
-          className="mt-1 w-full rounded border border-slate-300 px-3 py-2"
+          className={inputClass}
           defaultValue=""
           required
         >
@@ -28,21 +36,21 @@ export function ReservationForm() {
         </select>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-5 sm:grid-cols-2">
         <div>
-          <label className="block text-sm font-medium" htmlFor="preferredDate">
+          <label className={labelClass} htmlFor="preferredDate">
             Preferred date
           </label>
           <input
             id="preferredDate"
             name="preferredDate"
             type="date"
-            className="mt-1 w-full rounded border border-slate-300 px-3 py-2"
+            className={inputClass}
             required
           />
         </div>
         <div>
-          <label className="block text-sm font-medium" htmlFor="guests">
+          <label className={labelClass} htmlFor="guests">
             Number of guests
           </label>
           <input
@@ -50,66 +58,66 @@ export function ReservationForm() {
             name="guests"
             type="number"
             min="1"
-            className="mt-1 w-full rounded border border-slate-300 px-3 py-2"
+            className={inputClass}
             required
           />
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-5 sm:grid-cols-2">
         <div>
-          <label className="block text-sm font-medium" htmlFor="fullName">
+          <label className={labelClass} htmlFor="fullName">
             Full name
           </label>
           <input
             id="fullName"
             name="fullName"
             type="text"
-            className="mt-1 w-full rounded border border-slate-300 px-3 py-2"
+            className={inputClass}
             required
           />
         </div>
         <div>
-          <label className="block text-sm font-medium" htmlFor="phone">
+          <label className={labelClass} htmlFor="phone">
             WhatsApp / phone
           </label>
           <input
             id="phone"
             name="phone"
             type="tel"
-            className="mt-1 w-full rounded border border-slate-300 px-3 py-2"
+            className={inputClass}
             required
           />
         </div>
       </div>
 
       <div>
-        <label className="block text-sm font-medium" htmlFor="pickupLocation">
+        <label className={labelClass} htmlFor="pickupLocation">
           Hotel / pickup location
         </label>
         <input
           id="pickupLocation"
           name="pickupLocation"
           type="text"
-          className="mt-1 w-full rounded border border-slate-300 px-3 py-2"
+          className={inputClass}
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium" htmlFor="message">
+        <label className={labelClass} htmlFor="message">
           Message / notes
         </label>
         <textarea
           id="message"
           name="message"
           rows={4}
-          className="mt-1 w-full rounded border border-slate-300 px-3 py-2"
+          className={inputClass}
         />
       </div>
 
       <button
         type="button"
-        className="w-fit rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white"
+        className="w-fit cursor-not-allowed rounded-full bg-brand-aqua/60 px-6 py-3 text-sm font-semibold text-white"
       >
         Reservation backend pending
       </button>

@@ -1,7 +1,12 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { ActivityCard } from "@/components/activities/ActivityCard";
 import { ReservationForm } from "@/components/activities/ReservationForm";
+import { PageHero } from "@/components/ui/PageHero";
+import { SectionHeading } from "@/components/ui/SectionHeading";
 import { activities } from "@/lib/activities";
+import { siteConfig } from "@/lib/site";
+import { FaWhatsapp } from "react-icons/fa";
 
 export const metadata: Metadata = {
   title: "Activities",
@@ -11,28 +16,60 @@ export const metadata: Metadata = {
 
 export default function ActivitiesPage() {
   return (
-    <div className="mx-auto max-w-5xl space-y-8 px-4 py-10">
-      <section className="space-y-3">
-        <h1 className="text-3xl font-semibold">Activities</h1>
-        <p className="max-w-3xl text-slate-600">
-          Placeholder activity listing. Prices are base prices and can be
-          refined later with seasonal rules, guest counts, and private requests.
-        </p>
+    <div className="bg-white">
+      <PageHero
+        title="Activities"
+        subtitle="Choose your Red Sea experience and send a reservation request."
+      />
+
+      <section className="bg-white px-4 py-16 sm:py-20">
+        <div className="mx-auto max-w-6xl">
+          <SectionHeading
+            label="All Activities"
+            title="Find your next Red Sea adventure"
+          />
+          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {activities.map((activity) => (
+              <ActivityCard key={activity.slug} activity={activity} />
+            ))}
+          </div>
+        </div>
       </section>
 
-      <section className="grid gap-4 md:grid-cols-2">
-        {activities.map((activity) => (
-          <ActivityCard key={activity.slug} activity={activity} />
-        ))}
+      <section id="reservation" className="bg-white px-4 pb-16 sm:pb-20">
+        <div className="mx-auto max-w-3xl">
+          <SectionHeading
+            label="Make a Reservation"
+            title="Send a booking request"
+            subtitle="Fill in the details below and the Graquamarine team will get back to you to confirm your activity."
+          />
+          <ReservationForm />
+        </div>
       </section>
 
-      <section>
-        <h2 className="text-2xl font-semibold">Reserve an activity</h2>
-        <p className="mt-2 max-w-3xl text-slate-600">
-          Frontend-only reservation placeholder for collecting the expected
-          booking details before backend integration.
-        </p>
-        <ReservationForm />
+      <section className="border-t border-brand-aqua/15 bg-brand-navy/5 px-4 py-12">
+        <div className="mx-auto flex max-w-3xl flex-col items-center gap-4 text-center sm:flex-row sm:text-left">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#22c55e] text-white">
+            <FaWhatsapp aria-hidden="true" className="h-6 w-6" />
+          </div>
+          <div className="flex-1">
+            <p className="font-semibold text-brand-navy">
+              Need a quick answer?
+            </p>
+            <p className="text-sm text-brand-navy/70">
+              Send a WhatsApp message for fast confirmation and availability
+              checks.
+            </p>
+          </div>
+          <Link
+            href={siteConfig.whatsappHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="shrink-0 rounded-full bg-[#22c55e] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#16a34a]"
+          >
+            Chat on WhatsApp
+          </Link>
+        </div>
       </section>
     </div>
   );
