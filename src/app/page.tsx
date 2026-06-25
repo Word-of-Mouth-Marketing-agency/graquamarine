@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { activities } from "@/lib/activities";
 import { HeroSlideshow } from "@/components/hero/HeroSlideshow";
@@ -6,17 +7,17 @@ const featureCards = [
   {
     title: "100% Safety",
     text: "Safety-focused trips with briefings, equipment checks, and clear guidance before activities.",
-    gradient: "from-[#043f63] via-[#008aa6] to-[#77d7d3]",
+    image: "/images/features/safety.webp",
   },
   {
     title: "Unforgettable Experience",
     text: "Friendly Red Sea moments built around diving, snorkeling, island days, and relaxed guest care.",
-    gradient: "from-[#008aa6] via-[#28c7c5] to-[#f4c76b]",
+    image: "/images/features/experience.webp",
   },
   {
     title: "Exciting Location",
     text: "Hurghada gives guests easy access to clear water, reef views, islands, and boat adventures.",
-    gradient: "from-[#f4c76b] via-[#77d7d3] to-[#063b5c]",
+    image: "/images/features/locations.webp",
   },
 ];
 
@@ -34,7 +35,7 @@ export default function Home() {
       <section className="relative isolate overflow-hidden bg-[#063b5c] text-white">
         <HeroSlideshow />
         <div className="absolute inset-x-0 bottom-0 -z-10 h-32 bg-gradient-to-t from-[#063b5c]/70 to-transparent" />
-        <div className="mx-auto flex min-h-[620px] max-w-6xl items-center px-4 pb-20 pt-44 sm:pt-48">
+        <div className="mx-auto flex min-h-[620px] max-w-6xl items-center px-4 pb-20 pt-44 sm:min-h-[90vh] sm:pt-48">
           <div className="max-w-2xl space-y-5">
             <h1 className="text-4xl font-bold leading-tight sm:text-5xl">
               Water Activities in Hurghada
@@ -77,10 +78,15 @@ export default function Home() {
                 key={feature.title}
                 className="group overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-cyan-100 transition hover:-translate-y-1 hover:shadow-xl"
               >
-                <div
-                  className={`h-56 bg-gradient-to-br ${feature.gradient} p-5`}
-                >
-                  <div className="h-full rounded-md border border-white/30 bg-white/10" />
+                <div className="relative h-56 overflow-hidden">
+                  <Image
+                    src={feature.image}
+                    alt=""
+                    fill
+                    className="object-cover object-center"
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                  />
+                  <div className="absolute inset-0 bg-[#063b5c]/15" />
                 </div>
                 <div className="space-y-2 p-6">
                   <h3 className="text-xl font-bold text-[#063b5c]">

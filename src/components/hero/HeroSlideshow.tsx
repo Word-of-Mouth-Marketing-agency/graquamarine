@@ -31,13 +31,13 @@ export function HeroSlideshow() {
           alt=""
           fill
           priority={i === 0}
-          className={`object-cover transition-opacity duration-1000 ${
+          className={`object-cover object-center transition-opacity duration-1000 ${
             i === current ? "opacity-100" : "opacity-0"
           }`}
           sizes="100vw"
         />
       ))}
-      <div className="absolute inset-0 bg-[#063b5c]/60" />
+      <div className="absolute inset-0 bg-[#063b5c]/40" />
     </div>
   );
 }
