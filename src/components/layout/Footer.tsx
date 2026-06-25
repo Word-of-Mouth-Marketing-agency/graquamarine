@@ -36,9 +36,20 @@ export function Footer() {
           </h3>
           <div className="mt-3 space-y-2 text-sm text-cyan-50/80">
             <p>{siteConfig.location}</p>
-            {siteConfig.phonePlaceholders.map((phone) => (
-              <p key={phone}>{phone}</p>
-            ))}
+            <a
+              href={`tel:${siteConfig.phone}`}
+              className="block hover:text-white"
+            >
+              {siteConfig.displayPhone}
+            </a>
+            <a
+              href={siteConfig.whatsappHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block hover:text-white"
+            >
+              WhatsApp
+            </a>
             <SocialIconLinks iconClassName="border-white/25 text-cyan-50/85" />
           </div>
         </div>

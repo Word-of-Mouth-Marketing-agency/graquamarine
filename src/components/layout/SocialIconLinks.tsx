@@ -1,19 +1,20 @@
 import { FaFacebookF, FaInstagram, FaWhatsapp } from "react-icons/fa";
+import { siteConfig } from "@/lib/site";
 
 const socialLinks = [
   {
     label: "Facebook",
-    href: "#",
+    href: siteConfig.facebookUrl,
     Icon: FaFacebookF,
   },
   {
     label: "Instagram",
-    href: "#",
+    href: siteConfig.instagramUrl,
     Icon: FaInstagram,
   },
   {
     label: "WhatsApp",
-    href: "#",
+    href: siteConfig.whatsappHref,
     Icon: FaWhatsapp,
   },
 ];
@@ -32,8 +33,9 @@ export function SocialIconLinks({
       {socialLinks.map(({ label, href, Icon }) => (
         <a
           key={label}
-          // TODO: Replace placeholder href with the real Graquamarine social link.
           href={href}
+          target="_blank"
+          rel="noopener noreferrer"
           aria-label={label}
           className={`flex h-8 w-8 items-center justify-center rounded-full border transition hover:bg-white hover:text-[#063b5c] ${iconClassName}`}
         >

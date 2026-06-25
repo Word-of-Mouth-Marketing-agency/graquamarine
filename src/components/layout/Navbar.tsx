@@ -21,9 +21,12 @@ export function Navbar() {
         <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-2 text-sm sm:flex-row sm:items-center sm:justify-between">
           <p className="font-medium">{siteConfig.location}</p>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-white/85">
-            {siteConfig.phonePlaceholders.map((phone) => (
-              <span key={phone}>{phone}</span>
-            ))}
+            <a
+              href={`tel:${siteConfig.phone}`}
+              className="hover:text-white"
+            >
+              {siteConfig.displayPhone}
+            </a>
             <SocialIconLinks iconClassName="border-white/35 text-white/90" />
           </div>
         </div>
@@ -52,7 +55,7 @@ export function Navbar() {
           </ul>
           <Link
             href="/activities"
-            className="hidden rounded-full bg-white/15 px-5 py-2 text-sm font-semibold text-white ring-1 ring-white/30 transition hover:bg-white hover:text-[#063b5c] sm:inline-flex"
+            className="hidden rounded-full bg-[#f4c76b] px-5 py-2 text-sm font-semibold text-[#063b5c] shadow-md shadow-slate-900/20 transition hover:bg-white hover:text-[#063b5c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f4c76b] sm:inline-flex"
           >
             Reserve Now
           </Link>
