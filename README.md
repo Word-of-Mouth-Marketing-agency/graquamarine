@@ -125,6 +125,52 @@ npm run dev                         # start Next.js
 | `RESEND_API_KEY` | No | Resend API key for email notifications |
 | `RESERVATION_EMAIL_TO` | No | Email to receive reservation alerts |
 
+## Troubleshooting
+
+### Authentication failed against database server at localhost
+
+If you see `PrismaClientInitializationError` with "Authentication failed for
+user graquamarine_user", the password in your `.env` `DATABASE_URL` does not
+match the local PostgreSQL user password.
+
+**Option A — Reset with Docker (recommended):**
+
+Stop the dev server, then recreate the database container:
+
+```bash
+docker compose down -v
+docker compose up -d
+```
+
+Make sure your `.env` `DATABASE_URL` matches the Docker credentials:
+
+```
+DATABASE_URL="postgresql://graquamarine_user:graquamarine_local_password@localhost:5432/graquamarine"
+```
+
+Then sync the schema:
+
+```bash
+npm run db:push
+npm run dev
+```
+
+**Option B — Use your existing local PostgreSQL:**
+
+Keep your running PostgreSQL server. In psql as a superuser:
+
+```sql
+ALTER USER graquamarine_user WITH PASSWORD 'YOUR_PASSWORD_FROM_ENV';
+CREATE DATABASE graquamarine;
+GRANT ALL PRIVILEGES ON DATABASE graquamarine TO graquamarine_user;
+\c graquamarine
+GRANT ALL ON SCHEMA public TO graquamarine_user;
+```
+
+Then run `npm run db:push && npm run dev`.
+
+**Important:** Do not commit your `.env` file.
+
 ## VPS Production Deployment
 
 ### 1. Server packages
