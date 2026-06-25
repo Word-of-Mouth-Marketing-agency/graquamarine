@@ -142,11 +142,8 @@ export default function Home() {
                     className="object-cover object-center"
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                   />
-                  <div className="absolute bottom-4 left-4 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-[#063b5c]">
-                    {activity.category}
-                  </div>
                 </div>
-                <div className="flex min-h-64 flex-col p-5">
+                <div className="flex flex-col p-5">
                   <div className="flex items-start justify-between gap-3">
                     <h3 className="text-lg font-bold text-[#063b5c]">
                       {activity.name}
@@ -158,19 +155,9 @@ export default function Home() {
                   <p className="mt-3 text-sm leading-6 text-slate-600">
                     {activity.summary}
                   </p>
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {activity.highlights.map((highlight) => (
-                      <span
-                        key={highlight}
-                        className="rounded-full bg-cyan-50 px-2.5 py-1 text-xs text-[#063b5c]"
-                      >
-                        {highlight}
-                      </span>
-                    ))}
-                  </div>
                   <Link
                     href="/activities"
-                    className="mt-auto inline-flex w-fit rounded-full bg-[#f4c76b] px-4 py-2 text-sm font-semibold text-[#063b5c] transition hover:bg-[#008aa6] hover:text-white"
+                    className="mt-4 inline-flex w-fit rounded-full bg-[#f4c76b] px-4 py-2 text-sm font-semibold text-[#063b5c] transition hover:bg-[#008aa6] hover:text-white"
                   >
                     Reserve
                   </Link>
