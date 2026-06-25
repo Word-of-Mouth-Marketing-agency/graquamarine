@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { activities } from "@/lib/activities";
-import { siteConfig } from "@/lib/site";
 
 const featureCards = [
   {
@@ -20,7 +19,13 @@ const featureCards = [
   },
 ];
 
-const gallerySlides = ["Dive day", "Island trip", "Boat moment"];
+const gallerySlides = [
+  "Dive day",
+  "Snorkeling stop",
+  "Island trip",
+  "Private boat",
+  "Orange Bay",
+];
 
 export default function Home() {
   return (
@@ -29,27 +34,24 @@ export default function Home() {
         {/* TODO: Replace this gradient placeholder with the future hero video background. */}
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_20%_20%,rgba(119,215,211,0.55),transparent_28%),linear-gradient(135deg,#052f49_0%,#008aa6_48%,#77d7d3_100%)]" />
         <div className="absolute inset-x-0 bottom-0 -z-10 h-32 bg-gradient-to-t from-[#063b5c]/70 to-transparent" />
-        <div className="mx-auto flex min-h-[680px] max-w-6xl items-center px-4 py-24">
-          <div className="max-w-3xl space-y-6">
-            <p className="w-fit rounded-full border border-white/30 bg-white/10 px-4 py-2 text-sm font-semibold uppercase tracking-wide text-cyan-50">
-              {siteConfig.location}
-            </p>
-            <h1 className="text-5xl font-bold leading-tight sm:text-6xl">
-              Water activities in Hurghada for unforgettable Red Sea days
+        <div className="mx-auto flex min-h-[620px] max-w-6xl items-center px-4 pb-20 pt-44 sm:pt-48">
+          <div className="max-w-2xl space-y-5">
+            <h1 className="text-4xl font-bold leading-tight sm:text-5xl">
+              Water Activities in Hurghada
             </h1>
-            <p className="max-w-2xl text-lg leading-8 text-cyan-50/90">
-              Reserve diving, snorkeling, island trips, and private boat
-              experiences with a premium but friendly team in Hurghada.
+            <p className="max-w-xl text-base leading-7 text-cyan-50/90 sm:text-lg">
+              Diving, snorkeling, island trips, and private boat experiences on
+              the Red Sea.
             </p>
             <div className="flex flex-wrap gap-3">
               <Link
-                className="rounded-full bg-[#f4c76b] px-6 py-3 font-semibold text-[#063b5c] shadow-lg shadow-slate-900/20 transition hover:bg-white"
+                className="rounded-full bg-[#f4c76b] px-5 py-2.5 text-sm font-semibold text-[#063b5c] shadow-lg shadow-slate-900/20 transition hover:bg-white"
                 href="/activities"
               >
                 Reserve Now
               </Link>
               <Link
-                className="rounded-full border border-white/50 px-6 py-3 font-semibold text-white transition hover:bg-white hover:text-[#063b5c]"
+                className="rounded-full border border-white/50 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-white hover:text-[#063b5c]"
                 href="/contact"
               >
                 Contact Us
@@ -162,40 +164,39 @@ export default function Home() {
       </section>
 
       <section className="overflow-hidden bg-[#063b5c] px-4 py-20 text-white">
-        <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[1fr_420px]">
-          <div className="space-y-4">
-            <p className="text-sm font-semibold uppercase tracking-wide text-[#77d7d3]">
-              Gallery preview
-            </p>
-            <h2 className="text-3xl font-bold">Red Sea moments gallery</h2>
-            <p className="max-w-2xl leading-8 text-cyan-50/85">
-              A phone-style placeholder gallery for future diving, snorkeling,
-              island, and boat photos or short clips.
-            </p>
+        <div className="mx-auto max-w-6xl">
+          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div className="space-y-3">
+              <p className="text-sm font-semibold uppercase tracking-wide text-[#77d7d3]">
+                Gallery preview
+              </p>
+              <h2 className="text-3xl font-bold">Red Sea Gallery</h2>
+              <p className="max-w-2xl leading-8 text-cyan-50/85">
+                Placeholder gallery cards for future diving, snorkeling,
+                island, and boat photos or short clips.
+              </p>
+            </div>
           </div>
 
-          <div className="mx-auto w-full max-w-[320px] rounded-[2.4rem] border-8 border-slate-950 bg-slate-950 p-3 shadow-2xl shadow-slate-950/40">
-            {/* TODO: Replace placeholder slides with real Graquamarine gallery photos/videos. */}
-            <div className="overflow-hidden rounded-[1.8rem] bg-white p-3">
-              <div className="mx-auto mb-3 h-1.5 w-20 rounded-full bg-slate-900" />
-              <div className="space-y-3">
-                {gallerySlides.map((slide, index) => (
-                  <div
-                    key={slide}
-                    className="rounded-2xl bg-gradient-to-br from-[#77d7d3] via-[#008aa6] to-[#063b5c] p-4 text-white"
-                  >
-                    <div className="flex h-36 items-end rounded-xl border border-white/30 bg-white/10 p-4">
-                      <div>
-                        <p className="text-xs uppercase tracking-wide text-white/75">
-                          Slide {index + 1}
-                        </p>
-                        <h3 className="text-lg font-bold">{slide}</h3>
-                      </div>
+          {/* TODO: Replace gallery placeholders with real Graquamarine photos/videos. */}
+          <div className="mt-10 flex gap-5 overflow-x-auto pb-4 [scrollbar-color:#77d7d3_transparent]">
+            {gallerySlides.map((slide, index) => (
+              <article
+                key={slide}
+                className="min-w-[260px] overflow-hidden rounded-xl bg-white/10 ring-1 ring-white/15 sm:min-w-[340px]"
+              >
+                <div className="h-64 bg-gradient-to-br from-[#77d7d3] via-[#008aa6] to-[#052f49] p-5">
+                  <div className="flex h-full items-end rounded-lg border border-white/30 bg-white/10 p-5">
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-wide text-white/70">
+                        Slide {index + 1}
+                      </p>
+                      <h3 className="text-xl font-bold">{slide}</h3>
                     </div>
                   </div>
-                ))}
-              </div>
-            </div>
+                </div>
+              </article>
+            ))}
           </div>
         </div>
       </section>

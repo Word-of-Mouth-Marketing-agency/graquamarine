@@ -1,32 +1,36 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { siteConfig } from "@/lib/site";
+import { SocialIconLinks } from "@/components/layout/SocialIconLinks";
 
 export function Navbar() {
+  const pathname = usePathname();
+  const isHome = pathname === "/";
+  const headerClassName = isHome
+    ? "absolute inset-x-0 top-0 z-40 border-b border-white/15 bg-transparent text-white"
+    : "relative z-40 border-b border-cyan-900/20 bg-[#063b5c] text-white";
+  const navLinkClassName = isHome
+    ? "text-white/90 hover:text-white"
+    : "text-cyan-50/85 hover:text-white";
+
   return (
-    <header className="sticky top-0 z-40 border-b border-cyan-100 bg-white/95 shadow-sm backdrop-blur">
-      <div className="bg-[#063b5c] text-white">
+    <header className={headerClassName}>
+      <div className="border-b border-white/15 bg-white/5 backdrop-blur-sm">
         <div className="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-2 text-sm sm:flex-row sm:items-center sm:justify-between">
           <p className="font-medium">{siteConfig.location}</p>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-white/85">
             {siteConfig.phonePlaceholders.map((phone) => (
               <span key={phone}>{phone}</span>
             ))}
-            <div className="flex items-center gap-2">
-              {siteConfig.socialPlaceholders.map((social) => (
-                <span
-                  key={social}
-                  className="rounded-full border border-white/30 px-2 py-0.5 text-xs"
-                >
-                  {social}
-                </span>
-              ))}
-            </div>
+            <SocialIconLinks iconClassName="border-white/35 text-white/90" />
           </div>
         </div>
       </div>
       <nav className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center justify-between gap-4">
-          <Link href="/" className="text-2xl font-bold text-[#063b5c]">
+          <Link href="/" className="text-2xl font-bold text-white">
             {siteConfig.name}
           </Link>
           <Link
@@ -37,10 +41,10 @@ export function Navbar() {
           </Link>
         </div>
         <div className="flex flex-wrap items-center gap-4">
-          <ul className="flex flex-wrap gap-4 text-sm font-medium text-slate-700">
+          <ul className="flex flex-wrap gap-4 text-sm font-medium">
             {siteConfig.navigation.map((item) => (
               <li key={item.href}>
-                <Link href={item.href} className="hover:text-[#008aa6]">
+                <Link href={item.href} className={navLinkClassName}>
                   {item.label}
                 </Link>
               </li>
@@ -48,7 +52,7 @@ export function Navbar() {
           </ul>
           <Link
             href="/activities"
-            className="hidden rounded-full bg-[#008aa6] px-5 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#063b5c] sm:inline-flex"
+            className="hidden rounded-full bg-white/15 px-5 py-2 text-sm font-semibold text-white ring-1 ring-white/30 transition hover:bg-white hover:text-[#063b5c] sm:inline-flex"
           >
             Reserve Now
           </Link>

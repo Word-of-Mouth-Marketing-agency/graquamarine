@@ -8,7 +8,6 @@ export const siteConfig = {
   description:
     "Graquamarine offers diving, snorkeling, island trips, and private boat activities in Hurghada, Egypt.",
   phonePlaceholders: ["+20 XXX XXX XXXX", "+20 XXX XXX XXXX"],
-  socialPlaceholders: ["Facebook", "Instagram", "TikTok"],
   navigation: [
     { label: "Home", href: "/" },
     { label: "About", href: "/about" },

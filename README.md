@@ -7,6 +7,10 @@ The project now has a first homepage UI pass using the Graquamarine direction:
 deep ocean blue, aqua/turquoise, white, and warm sand accents. Real media and
 contact details are still placeholders until provided.
 
+The current homepage refinement uses a transparent non-sticky header over the
+hero, social icon placeholders, simplified hero copy, and a horizontal gallery
+placeholder carousel.
+
 ## Stack
 
 - Next.js App Router

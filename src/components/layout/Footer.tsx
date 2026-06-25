@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { siteConfig } from "@/lib/site";
+import { SocialIconLinks } from "@/components/layout/SocialIconLinks";
 
 export function Footer() {
   return (
@@ -38,16 +39,7 @@ export function Footer() {
             {siteConfig.phonePlaceholders.map((phone) => (
               <p key={phone}>{phone}</p>
             ))}
-            <div className="flex flex-wrap gap-2 pt-2">
-              {siteConfig.socialPlaceholders.map((social) => (
-                <span
-                  key={social}
-                  className="rounded-full border border-white/20 px-2 py-1 text-xs"
-                >
-                  {social}
-                </span>
-              ))}
-            </div>
+            <SocialIconLinks iconClassName="border-white/25 text-cyan-50/85" />
           </div>
         </div>
       </div>
