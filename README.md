@@ -3,8 +3,9 @@
 Foundation for the Graquamarine website, a water activities business in
 Hurghada, Egypt.
 
-This phase is intentionally pre-UI: the goal is clean structure, routing,
-shared data, metadata, and a reservation-flow placeholder before design work.
+The project now has a first homepage UI pass using the Graquamarine direction:
+deep ocean blue, aqua/turquoise, white, and warm sand accents. Real media and
+contact details are still placeholders until provided.
 
 ## Stack
 
@@ -35,7 +36,7 @@ integrations begin.
 
 ## Pages
 
-- `/` - home placeholder and links to activities/contact
+- `/` - homepage UI foundation with header, hero, activity cards, gallery placeholder, and CTA
 - `/about` - placeholder business story and safety notes
 - `/activities` - activity catalog and frontend-only reservation form
 - `/contact` - placeholder contact details

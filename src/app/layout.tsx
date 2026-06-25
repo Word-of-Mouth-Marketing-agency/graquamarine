@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { FloatingWhatsApp } from "@/components/layout/FloatingWhatsApp";
 import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
 import { siteConfig } from "@/lib/site";
@@ -44,10 +45,9 @@ export default function RootLayout({
     >
       <body className="flex min-h-full flex-col">
         <Navbar />
-        <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-10">
-          {children}
-        </main>
+        <main className="flex-1">{children}</main>
         <Footer />
+        <FloatingWhatsApp />
       </body>
     </html>
   );

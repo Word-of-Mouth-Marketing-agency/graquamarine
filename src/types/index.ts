@@ -8,4 +8,6 @@ export type Activity = {
   name: string;
   basePriceUsd: number;
   summary: string;
+  category: string;
+  highlights: string[];
 };

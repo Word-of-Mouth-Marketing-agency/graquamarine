@@ -2,42 +2,229 @@ import Link from "next/link";
 import { activities } from "@/lib/activities";
 import { siteConfig } from "@/lib/site";
 
+const featureCards = [
+  {
+    title: "100% Safety",
+    text: "Safety-focused trips with briefings, equipment checks, and clear guidance before activities.",
+    gradient: "from-[#043f63] via-[#008aa6] to-[#77d7d3]",
+  },
+  {
+    title: "Unforgettable Experience",
+    text: "Friendly Red Sea moments built around diving, snorkeling, island days, and relaxed guest care.",
+    gradient: "from-[#008aa6] via-[#28c7c5] to-[#f4c76b]",
+  },
+  {
+    title: "Exciting Location",
+    text: "Hurghada gives guests easy access to clear water, reef views, islands, and boat adventures.",
+    gradient: "from-[#f4c76b] via-[#77d7d3] to-[#063b5c]",
+  },
+];
+
+const gallerySlides = ["Dive day", "Island trip", "Boat moment"];
+
 export default function Home() {
   return (
-    <div className="space-y-8">
-      <section className="space-y-4">
-        <p className="text-sm font-medium uppercase tracking-wide text-slate-500">
-          {siteConfig.location}
-        </p>
-        <h1 className="max-w-3xl text-4xl font-semibold">
-          {siteConfig.name} water activities website foundation
-        </h1>
-        <p className="max-w-2xl text-lg text-slate-600">
-          Placeholder intro for diving, snorkeling, island trips, and private
-          boat reservations in Hurghada.
-        </p>
-        <div className="flex flex-wrap gap-3">
-          <Link
-            className="rounded bg-slate-900 px-4 py-2 text-white"
-            href="/activities"
-          >
-            View activities
-          </Link>
-          <Link
-            className="rounded border border-slate-300 px-4 py-2"
-            href="/contact"
-          >
-            Contact
-          </Link>
+    <div className="bg-white">
+      <section className="relative isolate overflow-hidden bg-[#063b5c] text-white">
+        {/* TODO: Replace this gradient placeholder with the future hero video background. */}
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_20%_20%,rgba(119,215,211,0.55),transparent_28%),linear-gradient(135deg,#052f49_0%,#008aa6_48%,#77d7d3_100%)]" />
+        <div className="absolute inset-x-0 bottom-0 -z-10 h-32 bg-gradient-to-t from-[#063b5c]/70 to-transparent" />
+        <div className="mx-auto flex min-h-[680px] max-w-6xl items-center px-4 py-24">
+          <div className="max-w-3xl space-y-6">
+            <p className="w-fit rounded-full border border-white/30 bg-white/10 px-4 py-2 text-sm font-semibold uppercase tracking-wide text-cyan-50">
+              {siteConfig.location}
+            </p>
+            <h1 className="text-5xl font-bold leading-tight sm:text-6xl">
+              Water activities in Hurghada for unforgettable Red Sea days
+            </h1>
+            <p className="max-w-2xl text-lg leading-8 text-cyan-50/90">
+              Reserve diving, snorkeling, island trips, and private boat
+              experiences with a premium but friendly team in Hurghada.
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <Link
+                className="rounded-full bg-[#f4c76b] px-6 py-3 font-semibold text-[#063b5c] shadow-lg shadow-slate-900/20 transition hover:bg-white"
+                href="/activities"
+              >
+                Reserve Now
+              </Link>
+              <Link
+                className="rounded-full border border-white/50 px-6 py-3 font-semibold text-white transition hover:bg-white hover:text-[#063b5c]"
+                href="/contact"
+              >
+                Contact Us
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 
-      <section>
-        <h2 className="text-2xl font-semibold">Starter activity catalog</h2>
-        <p className="mt-2 text-slate-600">
-          {activities.length} services are structured in shared data for reuse
-          across pages and the future reservation flow.
-        </p>
+      <section className="bg-[#f8fbfb] px-4 py-20">
+        <div className="mx-auto max-w-6xl">
+          <div className="max-w-2xl">
+            <p className="text-sm font-semibold uppercase tracking-wide text-[#008aa6]">
+              Why guests choose us
+            </p>
+            <h2 className="mt-2 text-3xl font-bold text-[#063b5c]">
+              Safe, friendly, and adventurous Red Sea experiences
+            </h2>
+          </div>
+          <div className="mt-10 grid gap-6 md:grid-cols-3">
+            {featureCards.map((feature) => (
+              <article
+                key={feature.title}
+                className="group overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-cyan-100 transition hover:-translate-y-1 hover:shadow-xl"
+              >
+                <div
+                  className={`h-56 bg-gradient-to-br ${feature.gradient} p-5`}
+                >
+                  <div className="h-full rounded-md border border-white/30 bg-white/10" />
+                </div>
+                <div className="space-y-2 p-6">
+                  <h3 className="text-xl font-bold text-[#063b5c]">
+                    {feature.title}
+                  </h3>
+                  <p className="leading-7 text-slate-600">{feature.text}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="px-4 py-20">
+        <div className="mx-auto max-w-6xl">
+          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-[#008aa6]">
+                Activities
+              </p>
+              <h2 className="mt-2 text-3xl font-bold text-[#063b5c]">
+                Reserve your next Red Sea activity
+              </h2>
+            </div>
+            <Link
+              href="/activities"
+              className="w-fit rounded-full bg-[#008aa6] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#063b5c]"
+            >
+              View all activities
+            </Link>
+          </div>
+
+          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {activities.map((activity, index) => (
+              <article
+                key={activity.slug}
+                className="overflow-hidden rounded-lg border border-cyan-100 bg-white shadow-sm"
+              >
+                <div className="relative h-44 overflow-hidden bg-gradient-to-br from-[#063b5c] via-[#008aa6] to-[#77d7d3]">
+                  <div className="absolute inset-4 rounded-md border border-white/30 bg-white/10" />
+                  <div className="absolute bottom-4 left-4 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-[#063b5c]">
+                    {activity.category}
+                  </div>
+                  <div className="absolute right-4 top-4 text-5xl font-bold text-white/15">
+                    {String(index + 1).padStart(2, "0")}
+                  </div>
+                </div>
+                <div className="flex min-h-64 flex-col p-5">
+                  <div className="flex items-start justify-between gap-3">
+                    <h3 className="text-lg font-bold text-[#063b5c]">
+                      {activity.name}
+                    </h3>
+                    <p className="shrink-0 font-semibold text-[#008aa6]">
+                      ${activity.basePriceUsd}
+                    </p>
+                  </div>
+                  <p className="mt-3 text-sm leading-6 text-slate-600">
+                    {activity.summary}
+                  </p>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {activity.highlights.map((highlight) => (
+                      <span
+                        key={highlight}
+                        className="rounded-full bg-cyan-50 px-2.5 py-1 text-xs text-[#063b5c]"
+                      >
+                        {highlight}
+                      </span>
+                    ))}
+                  </div>
+                  <Link
+                    href="/activities"
+                    className="mt-auto inline-flex w-fit rounded-full bg-[#f4c76b] px-4 py-2 text-sm font-semibold text-[#063b5c] transition hover:bg-[#008aa6] hover:text-white"
+                  >
+                    Reserve
+                  </Link>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="overflow-hidden bg-[#063b5c] px-4 py-20 text-white">
+        <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[1fr_420px]">
+          <div className="space-y-4">
+            <p className="text-sm font-semibold uppercase tracking-wide text-[#77d7d3]">
+              Gallery preview
+            </p>
+            <h2 className="text-3xl font-bold">Red Sea moments gallery</h2>
+            <p className="max-w-2xl leading-8 text-cyan-50/85">
+              A phone-style placeholder gallery for future diving, snorkeling,
+              island, and boat photos or short clips.
+            </p>
+          </div>
+
+          <div className="mx-auto w-full max-w-[320px] rounded-[2.4rem] border-8 border-slate-950 bg-slate-950 p-3 shadow-2xl shadow-slate-950/40">
+            {/* TODO: Replace placeholder slides with real Graquamarine gallery photos/videos. */}
+            <div className="overflow-hidden rounded-[1.8rem] bg-white p-3">
+              <div className="mx-auto mb-3 h-1.5 w-20 rounded-full bg-slate-900" />
+              <div className="space-y-3">
+                {gallerySlides.map((slide, index) => (
+                  <div
+                    key={slide}
+                    className="rounded-2xl bg-gradient-to-br from-[#77d7d3] via-[#008aa6] to-[#063b5c] p-4 text-white"
+                  >
+                    <div className="flex h-36 items-end rounded-xl border border-white/30 bg-white/10 p-4">
+                      <div>
+                        <p className="text-xs uppercase tracking-wide text-white/75">
+                          Slide {index + 1}
+                        </p>
+                        <h3 className="text-lg font-bold">{slide}</h3>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[#f4c76b] px-4 py-16">
+        <div className="mx-auto flex max-w-6xl flex-col gap-6 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide text-[#063b5c]/70">
+              Ready for the Red Sea?
+            </p>
+            <h2 className="mt-2 max-w-2xl text-3xl font-bold text-[#063b5c]">
+              Reserve your Hurghada water activity experience.
+            </h2>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <Link
+              href="/activities"
+              className="rounded-full bg-[#063b5c] px-6 py-3 font-semibold text-white transition hover:bg-[#008aa6]"
+            >
+              Reserve Now
+            </Link>
+            <Link
+              href="/contact"
+              className="rounded-full border border-[#063b5c]/40 px-6 py-3 font-semibold text-[#063b5c] transition hover:bg-white"
+            >
+              Contact Us
+            </Link>
+          </div>
+        </div>
       </section>
     </div>
   );

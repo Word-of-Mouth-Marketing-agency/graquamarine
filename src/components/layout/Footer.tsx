@@ -3,14 +3,53 @@ import { siteConfig } from "@/lib/site";
 
 export function Footer() {
   return (
-    <footer className="mt-auto border-t border-slate-200">
-      <div className="mx-auto flex max-w-5xl flex-col gap-2 px-4 py-6 text-sm text-slate-600 sm:flex-row sm:items-center sm:justify-between">
-        <p>
-          {siteConfig.name} - {siteConfig.location}
-        </p>
-        <Link href="/contact" className="hover:text-slate-950">
-          Contact and reservations
-        </Link>
+    <footer className="mt-auto bg-[#052f49] text-white">
+      <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 md:grid-cols-[1.2fr_1fr_1fr]">
+        <div className="space-y-3">
+          <h2 className="text-2xl font-bold">{siteConfig.name}</h2>
+          <p className="max-w-sm text-sm leading-6 text-cyan-50/80">
+            Premium, friendly Red Sea activities from Hurghada for diving,
+            snorkeling, island days, and private boat experiences.
+          </p>
+          <p className="text-sm text-cyan-50/70">{siteConfig.displayDomain}</p>
+        </div>
+
+        <div>
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-[#f4c76b]">
+            Navigation
+          </h3>
+          <ul className="mt-3 space-y-2 text-sm text-cyan-50/80">
+            {siteConfig.navigation.map((item) => (
+              <li key={item.href}>
+                <Link href={item.href} className="hover:text-white">
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div>
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-[#f4c76b]">
+            Contact
+          </h3>
+          <div className="mt-3 space-y-2 text-sm text-cyan-50/80">
+            <p>{siteConfig.location}</p>
+            {siteConfig.phonePlaceholders.map((phone) => (
+              <p key={phone}>{phone}</p>
+            ))}
+            <div className="flex flex-wrap gap-2 pt-2">
+              {siteConfig.socialPlaceholders.map((social) => (
+                <span
+                  key={social}
+                  className="rounded-full border border-white/20 px-2 py-1 text-xs"
+                >
+                  {social}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     </footer>
   );
