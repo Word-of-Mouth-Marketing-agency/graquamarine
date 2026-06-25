@@ -11,29 +11,29 @@ export default function ContactPage() {
   return (
     <div className="mx-auto max-w-5xl space-y-6 px-4 py-10">
       <h1 className="text-3xl font-semibold">Contact</h1>
-      <p className="max-w-3xl text-slate-600">
+      <p className="max-w-3xl text-brand-navy/75">
         Get in touch for reservations, questions, hotel pickup, and custom
         private boat requests.
       </p>
-      <dl className="grid gap-4 rounded border border-slate-200 p-4 sm:grid-cols-2">
+      <dl className="grid gap-4 rounded border border-brand-navy/10 p-4 sm:grid-cols-2">
         <div>
-          <dt className="text-sm font-medium text-slate-500">Business</dt>
+          <dt className="text-sm font-medium text-brand-navy/60">Business</dt>
           <dd>{siteConfig.name}</dd>
         </div>
         <div>
-          <dt className="text-sm font-medium text-slate-500">Location</dt>
+          <dt className="text-sm font-medium text-brand-navy/60">Location</dt>
           <dd>{siteConfig.location}</dd>
         </div>
         <div>
-          <dt className="text-sm font-medium text-slate-500">Phone</dt>
+          <dt className="text-sm font-medium text-brand-navy/60">Phone</dt>
           <dd>
-            <a href={`tel:${siteConfig.phone}`} className="text-[#008aa6] hover:underline">
+            <a href={`tel:${siteConfig.phone}`} className="text-brand-aqua hover:underline">
               {siteConfig.displayPhone}
             </a>
           </dd>
         </div>
         <div>
-          <dt className="text-sm font-medium text-slate-500">WhatsApp</dt>
+          <dt className="text-sm font-medium text-brand-navy/60">WhatsApp</dt>
           <dd>
             <a
               href={siteConfig.whatsappHref}
@@ -46,17 +46,17 @@ export default function ContactPage() {
           </dd>
         </div>
         <div>
-          <dt className="text-sm font-medium text-slate-500">Website</dt>
+          <dt className="text-sm font-medium text-brand-navy/60">Website</dt>
           <dd>{siteConfig.domain}</dd>
         </div>
         <div>
-          <dt className="text-sm font-medium text-slate-500">Social</dt>
+          <dt className="text-sm font-medium text-brand-navy/60">Social</dt>
           <dd className="flex gap-3">
             <a
               href={siteConfig.facebookUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#008aa6] hover:underline"
+              className="text-brand-aqua hover:underline"
             >
               Facebook
             </a>
@@ -64,7 +64,7 @@ export default function ContactPage() {
               href={siteConfig.instagramUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#008aa6] hover:underline"
+              className="text-brand-aqua hover:underline"
             >
               Instagram
             </a>

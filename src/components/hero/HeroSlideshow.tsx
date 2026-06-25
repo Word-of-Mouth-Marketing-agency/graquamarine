@@ -37,7 +37,7 @@ export function HeroSlideshow() {
           sizes="100vw"
         />
       ))}
-      <div className="absolute inset-0 bg-[#063b5c]/40" />
+      <div className="absolute inset-0 bg-brand-navy/40" />
     </div>
   );
 }

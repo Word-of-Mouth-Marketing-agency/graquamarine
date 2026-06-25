@@ -37,7 +37,7 @@ export function SocialIconLinks({
           target="_blank"
           rel="noopener noreferrer"
           aria-label={label}
-          className={`flex h-8 w-8 items-center justify-center rounded-full border transition hover:bg-white hover:text-[#063b5c] ${iconClassName}`}
+          className={`flex h-8 w-8 items-center justify-center rounded-full border transition hover:bg-white hover:text-brand-navy ${iconClassName}`}
         >
           <Icon aria-hidden="true" className="h-4 w-4" />
         </a>

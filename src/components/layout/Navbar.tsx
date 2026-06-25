@@ -10,10 +10,10 @@ export function Navbar() {
   const isHome = pathname === "/";
   const headerClassName = isHome
     ? "absolute inset-x-0 top-0 z-40 border-b border-white/15 bg-transparent text-white"
-    : "relative z-40 border-b border-cyan-900/20 bg-[#063b5c] text-white";
+    : "relative z-40 border-b border-brand-navy/20 bg-brand-navy text-white";
   const navLinkClassName = isHome
     ? "text-white/90 hover:text-white"
-    : "text-cyan-50/85 hover:text-white";
+    : "text-white/85 hover:text-white";
 
   return (
     <header className={headerClassName}>
@@ -38,7 +38,7 @@ export function Navbar() {
           </Link>
           <Link
             href="/activities"
-            className="rounded-full bg-[#f4c76b] px-4 py-2 text-sm font-semibold text-[#063b5c] shadow-sm sm:hidden"
+            className="rounded-full bg-brand-aqua px-4 py-2 text-sm font-semibold text-white shadow-sm sm:hidden"
           >
             Reserve Now
           </Link>
@@ -55,7 +55,7 @@ export function Navbar() {
           </ul>
           <Link
             href="/activities"
-            className="hidden rounded-full bg-[#f4c76b] px-5 py-2 text-sm font-semibold text-[#063b5c] shadow-md shadow-slate-900/20 transition hover:bg-white hover:text-[#063b5c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#f4c76b] sm:inline-flex"
+            className="hidden rounded-full bg-brand-aqua px-5 py-2 text-sm font-semibold text-white shadow-md shadow-slate-900/20 transition hover:bg-white hover:text-brand-navy focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-aqua sm:inline-flex"
           >
             Reserve Now
           </Link>

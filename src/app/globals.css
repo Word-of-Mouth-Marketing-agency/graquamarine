@@ -6,6 +6,9 @@
 }
 
 @theme inline {
+  --color-brand-aqua: #01A3CB;
+  --color-brand-navy: #282262;
+  --color-brand-white: #FFFFFF;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);

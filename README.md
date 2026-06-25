@@ -3,8 +3,8 @@
 Foundation for the Graquamarine website, a water activities business in
 Hurghada, Egypt.
 
-The project now has a first homepage UI pass using the Graquamarine direction:
-deep ocean blue, aqua/turquoise, white, and warm sand accents. Real contact
+The project now has a first homepage UI pass using the Graquamarine brand
+palette: #01A3CB (aqua), #282262 (navy), and white. Real contact
 details (phone, WhatsApp, Facebook, Instagram) are wired in, the hero uses a
 fading image slideshow, feature cards and activity cards show real photography,
 and section backgrounds use real imagery.

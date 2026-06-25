@@ -50,14 +50,14 @@ export function GalleryCarousel() {
       <button
         onClick={prev}
         aria-label="Previous gallery image"
-        className="absolute left-2 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-white/80 text-slate-700 shadow-md transition hover:bg-white hover:text-[#063b5c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#008aa6] sm:left-4"
+        className="absolute left-2 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-white/80 text-brand-navy shadow-md transition hover:bg-white hover:text-brand-aqua focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-aqua sm:left-4"
       >
         <FaChevronLeft aria-hidden="true" className="h-5 w-5" />
       </button>
       <button
         onClick={next}
         aria-label="Next gallery image"
-        className="absolute right-2 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-white/80 text-slate-700 shadow-md transition hover:bg-white hover:text-[#063b5c] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#008aa6] sm:right-4"
+        className="absolute right-2 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full bg-white/80 text-brand-navy shadow-md transition hover:bg-white hover:text-brand-aqua focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-aqua sm:right-4"
       >
         <FaChevronRight aria-hidden="true" className="h-5 w-5" />
       </button>

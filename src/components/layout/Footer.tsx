@@ -19,13 +19,13 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-[#008aa6]">
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-brand-aqua">
               Navigation
             </h3>
-            <ul className="mt-3 space-y-2 text-sm text-slate-600">
+            <ul className="mt-3 space-y-2 text-sm text-brand-navy/75">
               {siteConfig.navigation.map((item) => (
                 <li key={item.href}>
-                  <Link href={item.href} className="hover:text-[#063b5c]">
+                  <Link href={item.href} className="hover:text-brand-aqua">
                     {item.label}
                   </Link>
                 </li>
@@ -34,25 +34,25 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-[#008aa6]">
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-brand-aqua">
               Contact
             </h3>
-            <div className="mt-3 space-y-2 text-sm text-slate-600">
+            <div className="mt-3 space-y-2 text-sm text-brand-navy/75">
               <p>{siteConfig.location}</p>
               <a
                 href={`tel:${siteConfig.phone}`}
-                className="block hover:text-[#063b5c]"
+                className="block hover:text-brand-aqua"
               >
                 {siteConfig.displayPhone}
               </a>
-              <SocialIconLinks iconClassName="border-slate-300 text-slate-500" />
+              <SocialIconLinks iconClassName="border-brand-navy/20 text-brand-navy/60" />
             </div>
           </div>
         </div>
       </footer>
 
-      <div className="border-t border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-6xl flex-col items-center gap-2 px-4 py-5 text-center text-sm text-slate-500 sm:flex-row sm:justify-between">
+      <div className="border-t border-brand-navy/10 bg-white">
+        <div className="mx-auto flex max-w-6xl flex-col items-center gap-2 px-4 py-5 text-center text-sm text-brand-navy/60 sm:flex-row sm:justify-between">
           <p>&copy; {new Date().getFullYear()} {siteConfig.name}. All rights reserved.</p>
           <p>
             Powered by{" "}
@@ -60,7 +60,7 @@ export function Footer() {
               href="https://wordofmoutheg.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-medium text-[#008aa6] hover:underline"
+              className="font-medium text-brand-aqua hover:underline"
             >
               WORD OF MOUTH
             </a>
