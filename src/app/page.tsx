@@ -108,7 +108,7 @@ export default function Home() {
             fill
             className="object-cover object-center"
           />
-          <div className="absolute inset-0 bg-white/85" />
+          <div className="absolute inset-0 bg-white/30" />
         </div>
         <div className="relative mx-auto max-w-6xl">
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
