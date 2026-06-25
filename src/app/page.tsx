@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { activities } from "@/lib/activities";
 import { HeroSlideshow } from "@/components/hero/HeroSlideshow";
+import { GalleryCarousel } from "@/components/gallery/GalleryCarousel";
 
 const featureCards = [
   {
@@ -19,14 +20,6 @@ const featureCards = [
     text: "Hurghada gives guests easy access to clear water, reef views, islands, and boat adventures.",
     image: "/images/features/locations.webp",
   },
-];
-
-const gallerySlides = [
-  "Dive day",
-  "Snorkeling stop",
-  "Island trip",
-  "Private boat",
-  "Orange Bay",
 ];
 
 export default function Home() {
@@ -168,39 +161,13 @@ export default function Home() {
 
       <section className="overflow-hidden bg-white px-4 py-20">
         <div className="mx-auto max-w-6xl">
-          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-            <div className="space-y-3">
-              <p className="text-sm font-semibold uppercase tracking-wide text-[#008aa6]">
-                Gallery preview
-              </p>
-              <h2 className="text-3xl font-bold text-[#063b5c]">Red Sea Gallery</h2>
-              <p className="max-w-2xl leading-8 text-slate-600">
-                Placeholder gallery cards for future diving, snorkeling,
-                island, and boat photos or short clips.
-              </p>
-            </div>
+          <div className="max-w-2xl">
+            <p className="text-sm font-semibold uppercase tracking-wide text-[#008aa6]">
+              Gallery preview
+            </p>
+            <h2 className="mt-2 text-3xl font-bold text-[#063b5c]">Red Sea Gallery</h2>
           </div>
-
-          {/* TODO: Replace gallery placeholders with real Graquamarine photos/videos. */}
-          <div className="mt-10 flex gap-5 overflow-x-auto pb-4 [scrollbar-color:#008aa6_transparent]">
-            {gallerySlides.map((slide, index) => (
-              <article
-                key={slide}
-                className="min-w-[260px] overflow-hidden rounded-xl border border-slate-200 bg-slate-50 sm:min-w-[340px]"
-              >
-                <div className="h-64 bg-gradient-to-br from-[#77d7d3] via-[#008aa6] to-[#052f49] p-5">
-                  <div className="flex h-full items-end rounded-lg border border-white/30 bg-white/10 p-5">
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-wide text-white/70">
-                        Slide {index + 1}
-                      </p>
-                      <h3 className="text-xl font-bold text-white">{slide}</h3>
-                    </div>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
+          <GalleryCarousel />
         </div>
       </section>
 
