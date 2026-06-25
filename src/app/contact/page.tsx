@@ -67,7 +67,6 @@ export default function ContactPage() {
     <div className="bg-white">
       <PageHero
         title="Contact"
-        subtitle="Ready to plan your Red Sea activity? Get in touch with Graquamarine in Hurghada."
       />
 
       <section className="bg-white px-4 py-16 sm:py-20">

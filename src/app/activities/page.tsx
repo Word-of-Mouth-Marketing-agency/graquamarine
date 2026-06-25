@@ -19,7 +19,6 @@ export default function ActivitiesPage() {
     <div className="bg-white">
       <PageHero
         title="Activities"
-        subtitle="Choose your Red Sea experience and send a reservation request."
       />
 
       <section className="bg-white px-4 py-16 sm:py-20">

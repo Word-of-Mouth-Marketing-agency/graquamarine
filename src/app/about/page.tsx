@@ -33,7 +33,6 @@ export default function AboutPage() {
     <div className="bg-white">
       <PageHero
         title="About Graquamarine"
-        subtitle="Red Sea water activities and adventure experiences in Hurghada, Egypt."
       />
 
       <section className="bg-white px-4 py-16 sm:py-20">
