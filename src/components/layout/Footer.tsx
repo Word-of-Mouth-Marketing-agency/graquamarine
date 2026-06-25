@@ -14,7 +14,7 @@ export function Footer() {
               alt={siteConfig.name}
               width={200}
               height={64}
-              className="h-12 w-auto"
+              className="h-16 w-auto"
             />
             <p className="max-w-sm text-sm leading-6 text-slate-600">
               Premium, friendly Red Sea activities from Hurghada for diving,
@@ -48,14 +48,6 @@ export function Footer() {
                 className="block hover:text-[#063b5c]"
               >
                 {siteConfig.displayPhone}
-              </a>
-              <a
-                href={siteConfig.whatsappHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block hover:text-[#063b5c]"
-              >
-                WhatsApp
               </a>
               <SocialIconLinks iconClassName="border-slate-300 text-slate-500" />
             </div>
