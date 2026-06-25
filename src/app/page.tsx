@@ -101,22 +101,20 @@ export default function Home() {
       </section>
 
       <section className="relative px-4 py-20">
-        <div className="absolute inset-0 -z-10">
-          <Image
-            src="/images/backgrounds/activites-bg.webp"
-            alt=""
-            fill
-            className="object-cover object-center"
-          />
-          <div className="absolute inset-0 bg-white/30" />
-        </div>
+        <Image
+          src="/images/backgrounds/activites-bg.webp"
+          alt=""
+          fill
+          className="object-cover object-center"
+        />
+        <div className="absolute inset-0 bg-[#063b5c]/70" />
         <div className="relative mx-auto max-w-6xl">
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-wide text-[#008aa6]">
+            <div className="text-white">
+              <p className="text-sm font-semibold uppercase tracking-wide text-[#f4c76b]">
                 Activities
               </p>
-              <h2 className="mt-2 text-3xl font-bold text-[#063b5c]">
+              <h2 className="mt-2 text-3xl font-bold">
                 Reserve your next Red Sea activity
               </h2>
             </div>
