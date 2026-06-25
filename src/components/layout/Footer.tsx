@@ -14,7 +14,7 @@ export function Footer() {
               alt={siteConfig.name}
               width={200}
               height={64}
-              className="h-16 w-auto"
+              className="h-32 w-auto"
             />
             <p className="max-w-sm text-sm leading-6 text-slate-600">
               Premium, friendly Red Sea activities from Hurghada for diving,

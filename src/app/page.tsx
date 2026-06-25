@@ -204,7 +204,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="relative px-4 py-16">
+      <section className="relative px-4 py-24 min-h-[350px]">
         <Image
           src="/images/backgrounds/first-dive-wide.webp"
           alt=""
