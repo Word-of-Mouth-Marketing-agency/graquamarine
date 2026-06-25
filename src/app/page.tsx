@@ -159,13 +159,16 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="overflow-hidden bg-white px-4 py-20">
+      <section className="overflow-hidden bg-white px-4 py-16 sm:py-20">
         <div className="mx-auto max-w-6xl">
-          <div className="max-w-2xl">
+          <div className="mx-auto max-w-2xl text-center">
             <p className="text-sm font-semibold uppercase tracking-wide text-brand-aqua">
               Gallery preview
             </p>
             <h2 className="mt-2 text-3xl font-bold text-brand-navy">Red Sea Gallery</h2>
+            <p className="mt-3 text-brand-navy/70">
+              Photos from our Red Sea adventures
+            </p>
           </div>
           <GalleryCarousel />
         </div>

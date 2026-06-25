@@ -26,7 +26,7 @@ export function GalleryCarousel() {
     const firstSlide = trackRef.current.firstElementChild as HTMLElement | null;
     if (!firstSlide) return;
     const sw = firstSlide.offsetWidth;
-    const gap = 16; // Tailwind gap-4 = 16px
+    const gap = 16;
     const vw = viewportRef.current.clientWidth;
     const count = Math.max(1, Math.floor((vw + gap) / (sw + gap)));
     setSlideWidth(sw);
@@ -54,37 +54,38 @@ export function GalleryCarousel() {
     return () => clearInterval(id);
   }, [goNext]);
 
-  const translateX = currentIndex * (slideWidth + 16); // +16 for gap-4
+  const translateX = currentIndex * (slideWidth + 16);
 
   return (
-    <div className="mx-auto mt-10 max-w-5xl">
-      <div className="flex items-center gap-3">
+    <div className="mx-auto mt-8 max-w-5xl">
+      <div className="flex items-center gap-2 sm:gap-3">
         <button
           onClick={goPrev}
           type="button"
           aria-label="Previous gallery images"
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-aqua text-white shadow-md transition hover:bg-brand-navy focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-aqua"
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-aqua text-white shadow-lg transition hover:scale-105 hover:bg-brand-navy focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-aqua active:scale-95 sm:h-12 sm:w-12"
         >
-          <FaChevronLeft aria-hidden="true" className="h-5 w-5" />
+          <FaChevronLeft aria-hidden="true" className="h-4 w-4 sm:h-5 sm:w-5" />
         </button>
 
         <div
           ref={viewportRef}
-          className="min-w-0 flex-1 overflow-hidden"
+          className="min-w-0 flex-1 overflow-hidden rounded-xl p-1"
         >
           <div
             ref={trackRef}
             className="flex gap-4 transition-transform duration-500 ease-in-out"
             style={{
-              transform: translateX > 0
-                ? `translateX(-${translateX}px)`
-                : undefined,
+              transform:
+                translateX > 0
+                  ? `translateX(-${translateX}px)`
+                  : undefined,
             }}
           >
             {galleryImages.map((img) => (
               <div
                 key={img.src}
-                className="relative h-64 w-full shrink-0 overflow-hidden rounded-xl shadow-md sm:w-1/2 lg:w-1/3"
+                className="relative h-72 w-full shrink-0 overflow-hidden rounded-xl shadow-md sm:h-80 lg:h-96"
               >
                 <Image
                   src={img.src}
@@ -102,11 +103,29 @@ export function GalleryCarousel() {
           onClick={goNext}
           type="button"
           aria-label="Next gallery images"
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-aqua text-white shadow-md transition hover:bg-brand-navy focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-aqua"
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-aqua text-white shadow-lg transition hover:scale-105 hover:bg-brand-navy focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-aqua active:scale-95 sm:h-12 sm:w-12"
         >
-          <FaChevronRight aria-hidden="true" className="h-5 w-5" />
+          <FaChevronRight aria-hidden="true" className="h-4 w-4 sm:h-5 sm:w-5" />
         </button>
       </div>
+
+      {maxIndex > 0 && (
+        <div className="mt-6 flex items-center justify-center gap-2">
+          {Array.from({ length: maxIndex + 1 }).map((_, i) => (
+            <button
+              key={i}
+              type="button"
+              aria-label={`Go to gallery group ${i + 1}`}
+              className={`h-2.5 w-2.5 rounded-full transition-all duration-300 ${
+                i === currentIndex
+                  ? "bg-brand-aqua"
+                  : "bg-brand-navy/20 hover:bg-brand-navy/40"
+              }`}
+              onClick={() => setCurrentIndex(i)}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
