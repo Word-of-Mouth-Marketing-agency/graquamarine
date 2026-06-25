@@ -7,7 +7,7 @@ type PageHeroProps = {
 
 export function PageHero({ title, subtitle }: PageHeroProps) {
   return (
-    <section className="relative px-4 pt-24 pb-10 sm:pt-28 sm:pb-12">
+    <section className="relative px-4 pt-32 pb-10 sm:pt-36 sm:pb-12">
       <Image
         src="/images/backgrounds/activites-bg.webp"
         alt=""
