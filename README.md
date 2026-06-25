@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Graquamarine Website
 
-## Getting Started
+Foundation for the Graquamarine website, a water activities business in
+Hurghada, Egypt.
 
-First, run the development server:
+This phase is intentionally pre-UI: the goal is clean structure, routing,
+shared data, metadata, and a reservation-flow placeholder before design work.
+
+## Stack
+
+- Next.js App Router
+- TypeScript
+- Tailwind CSS
+- ESLint
+- npm
+
+## Local Setup
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Copy `.env.example` to `.env.local` when reservation or external service
+integrations begin.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Scripts
 
-## Learn More
+- `npm run dev` - start local development
+- `npm run lint` - run ESLint
+- `npm run build` - create production build
+- `npm run start` - run production server after build
 
-To learn more about Next.js, take a look at the following resources:
+## Pages
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `/` - home placeholder and links to activities/contact
+- `/about` - placeholder business story and safety notes
+- `/activities` - activity catalog and frontend-only reservation form
+- `/contact` - placeholder contact details
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Activity Data
 
-## Deploy on Vercel
+Services and base prices live in `src/lib/activities.ts`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Reservation Flow Plan
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Current state:
+
+- The Activities page includes a frontend-only reservation form.
+- The form collects activity, date, full name, WhatsApp/phone, guest count,
+  hotel/pickup location, and notes.
+- Submission is intentionally disabled until a backend/email workflow is chosen.
+
+Future flow:
+
+1. Validate form fields on the client and server.
+2. Send reservation requests to an API route or external form handler.
+3. Email the Graquamarine team through Resend or similar.
+4. Store reservation records in Supabase or another database if needed.
+5. Add confirmation state, spam protection, and admin follow-up workflow.
+
+## Future Phases
+
+1. Visual design and brand direction.
+2. Real copywriting and media collection.
+3. Reservation backend integration.
+4. SEO pass: sitemap, robots, structured data, metadata, and local keywords.
+5. Deployment, domain, SSL, analytics, and post-launch checks.
