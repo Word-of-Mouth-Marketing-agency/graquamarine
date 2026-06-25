@@ -85,7 +85,7 @@ export function GalleryCarousel() {
             {galleryImages.map((img) => (
               <div
                 key={img.src}
-                className="relative h-72 w-full shrink-0 overflow-hidden rounded-xl shadow-md sm:h-80 lg:h-96"
+                className="relative h-72 w-full shrink-0 overflow-hidden rounded-xl shadow-md sm:h-80 sm:w-1/2 lg:h-96 lg:w-1/3"
               >
                 <Image
                   src={img.src}
