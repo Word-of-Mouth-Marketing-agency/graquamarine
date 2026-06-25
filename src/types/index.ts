@@ -10,4 +10,5 @@ export type Activity = {
   summary: string;
   category: string;
   highlights: string[];
+  image: string;
 };

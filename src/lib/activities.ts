@@ -8,6 +8,7 @@ export const activities: Activity[] = [
     summary: "A beginner-friendly diving experience for first-time guests.",
     category: "Diving",
     highlights: ["Beginner-friendly", "Guide support"],
+    image: "/images/activities/intro-diving.webp",
   },
   {
     slug: "professional-diving",
@@ -16,6 +17,7 @@ export const activities: Activity[] = [
     summary: "Guided dives for certified or experienced divers.",
     category: "Diving",
     highlights: ["Certified divers", "Red Sea sites"],
+    image: "/images/activities/professional-diving.webp",
   },
   {
     slug: "snorkeling",
@@ -24,6 +26,7 @@ export const activities: Activity[] = [
     summary: "A relaxed Red Sea snorkeling trip for families and groups.",
     category: "Snorkeling",
     highlights: ["Family-friendly", "Reef views"],
+    image: "/images/activities/snorkeling.webp",
   },
   {
     slug: "paradise-island",
@@ -32,6 +35,7 @@ export const activities: Activity[] = [
     summary: "A day trip to Paradise Island with sea activities.",
     category: "Island Trip",
     highlights: ["Beach time", "Boat day"],
+    image: "/images/activities/paradise-island.jpg",
   },
   {
     slug: "open-water-diver-course",
@@ -40,6 +44,7 @@ export const activities: Activity[] = [
     summary: "Entry-level diver certification course.",
     category: "Course",
     highlights: ["Certification path", "Training sessions"],
+    image: "/images/activities/openwater-divercourse.webp",
   },
   {
     slug: "advanced-open-water-diver-course",
@@ -48,6 +53,7 @@ export const activities: Activity[] = [
     summary: "Advanced certification course for certified divers.",
     category: "Course",
     highlights: ["Skill building", "Advanced dives"],
+    image: "/images/activities/advanced-openwater-divercourse.webp",
   },
   {
     slug: "private-boat",
@@ -56,6 +62,7 @@ export const activities: Activity[] = [
     summary: "Private boat reservation for custom group trips.",
     category: "Private Trip",
     highlights: ["Custom plan", "Group-friendly"],
+    image: "/images/activities/private-boat.webp",
   },
   {
     slug: "orange-bay",
@@ -64,5 +71,6 @@ export const activities: Activity[] = [
     summary: "A Red Sea island day trip to Orange Bay.",
     category: "Island Trip",
     highlights: ["Island visit", "Clear water"],
+    image: "/images/activities/orange-bay.jpg",
   },
 ];

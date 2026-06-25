@@ -100,8 +100,17 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="px-4 py-20">
-        <div className="mx-auto max-w-6xl">
+      <section className="relative px-4 py-20">
+        <div className="absolute inset-0 -z-10">
+          <Image
+            src="/images/backgrounds/activites-bg.webp"
+            alt=""
+            fill
+            className="object-cover object-center"
+          />
+          <div className="absolute inset-0 bg-white/85" />
+        </div>
+        <div className="relative mx-auto max-w-6xl">
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div>
               <p className="text-sm font-semibold uppercase tracking-wide text-[#008aa6]">
@@ -120,18 +129,21 @@ export default function Home() {
           </div>
 
           <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {activities.map((activity, index) => (
+            {activities.map((activity) => (
               <article
                 key={activity.slug}
                 className="overflow-hidden rounded-lg border border-cyan-100 bg-white shadow-sm"
               >
-                <div className="relative h-44 overflow-hidden bg-gradient-to-br from-[#063b5c] via-[#008aa6] to-[#77d7d3]">
-                  <div className="absolute inset-4 rounded-md border border-white/30 bg-white/10" />
+                <div className="relative h-44 overflow-hidden">
+                  <Image
+                    src={activity.image}
+                    alt={activity.name}
+                    fill
+                    className="object-cover object-center"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  />
                   <div className="absolute bottom-4 left-4 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-[#063b5c]">
                     {activity.category}
-                  </div>
-                  <div className="absolute right-4 top-4 text-5xl font-bold text-white/15">
-                    {String(index + 1).padStart(2, "0")}
                   </div>
                 </div>
                 <div className="flex min-h-64 flex-col p-5">
@@ -169,15 +181,15 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="overflow-hidden bg-[#063b5c] px-4 py-20 text-white">
+      <section className="overflow-hidden bg-white px-4 py-20">
         <div className="mx-auto max-w-6xl">
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div className="space-y-3">
-              <p className="text-sm font-semibold uppercase tracking-wide text-[#77d7d3]">
+              <p className="text-sm font-semibold uppercase tracking-wide text-[#008aa6]">
                 Gallery preview
               </p>
-              <h2 className="text-3xl font-bold">Red Sea Gallery</h2>
-              <p className="max-w-2xl leading-8 text-cyan-50/85">
+              <h2 className="text-3xl font-bold text-[#063b5c]">Red Sea Gallery</h2>
+              <p className="max-w-2xl leading-8 text-slate-600">
                 Placeholder gallery cards for future diving, snorkeling,
                 island, and boat photos or short clips.
               </p>
@@ -185,11 +197,11 @@ export default function Home() {
           </div>
 
           {/* TODO: Replace gallery placeholders with real Graquamarine photos/videos. */}
-          <div className="mt-10 flex gap-5 overflow-x-auto pb-4 [scrollbar-color:#77d7d3_transparent]">
+          <div className="mt-10 flex gap-5 overflow-x-auto pb-4 [scrollbar-color:#008aa6_transparent]">
             {gallerySlides.map((slide, index) => (
               <article
                 key={slide}
-                className="min-w-[260px] overflow-hidden rounded-xl bg-white/10 ring-1 ring-white/15 sm:min-w-[340px]"
+                className="min-w-[260px] overflow-hidden rounded-xl border border-slate-200 bg-slate-50 sm:min-w-[340px]"
               >
                 <div className="h-64 bg-gradient-to-br from-[#77d7d3] via-[#008aa6] to-[#052f49] p-5">
                   <div className="flex h-full items-end rounded-lg border border-white/30 bg-white/10 p-5">
@@ -197,7 +209,7 @@ export default function Home() {
                       <p className="text-xs font-semibold uppercase tracking-wide text-white/70">
                         Slide {index + 1}
                       </p>
-                      <h3 className="text-xl font-bold">{slide}</h3>
+                      <h3 className="text-xl font-bold text-white">{slide}</h3>
                     </div>
                   </div>
                 </div>
@@ -207,26 +219,33 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="bg-[#f4c76b] px-4 py-16">
-        <div className="mx-auto flex max-w-6xl flex-col gap-6 md:flex-row md:items-center md:justify-between">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-wide text-[#063b5c]/70">
+      <section className="relative px-4 py-16">
+        <Image
+          src="/images/backgrounds/first-dive-wide.webp"
+          alt=""
+          fill
+          className="object-cover object-center"
+        />
+        <div className="absolute inset-0 bg-[#063b5c]/70" />
+        <div className="relative mx-auto flex max-w-6xl flex-col gap-6 md:flex-row md:items-center md:justify-between">
+          <div className="text-white">
+            <p className="text-sm font-semibold uppercase tracking-wide text-[#f4c76b]">
               Ready for the Red Sea?
             </p>
-            <h2 className="mt-2 max-w-2xl text-3xl font-bold text-[#063b5c]">
+            <h2 className="mt-2 max-w-2xl text-3xl font-bold">
               Reserve your Hurghada water activity experience.
             </h2>
           </div>
           <div className="flex flex-wrap gap-3">
             <Link
               href="/activities"
-              className="rounded-full bg-[#063b5c] px-6 py-3 font-semibold text-white transition hover:bg-[#008aa6]"
+              className="rounded-full bg-[#f4c76b] px-6 py-3 font-semibold text-[#063b5c] transition hover:bg-white"
             >
               Reserve Now
             </Link>
             <Link
               href="/contact"
-              className="rounded-full border border-[#063b5c]/40 px-6 py-3 font-semibold text-[#063b5c] transition hover:bg-white"
+              className="rounded-full border border-white/50 px-6 py-3 font-semibold text-white transition hover:bg-white hover:text-[#063b5c]"
             >
               Contact Us
             </Link>

@@ -6,11 +6,13 @@ Hurghada, Egypt.
 The project now has a first homepage UI pass using the Graquamarine direction:
 deep ocean blue, aqua/turquoise, white, and warm sand accents. Real contact
 details (phone, WhatsApp, Facebook, Instagram) are wired in, the hero uses a
-fading image slideshow, and feature cards now show real photography.
+fading image slideshow, feature cards and activity cards show real photography,
+and section backgrounds use real imagery.
 
 The current homepage refinement uses a transparent non-sticky header over a
 90vh hero, real social icon links, simplified hero copy, hero image slideshow,
-real feature card images, and a horizontal gallery placeholder carousel.
+real feature/activity card images, section background images, and a horizontal
+gallery placeholder carousel.
 
 ## Stack
 
