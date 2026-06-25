@@ -8,7 +8,7 @@ services:
       POSTGRES_USER: graquamarine_user
       POSTGRES_PASSWORD: graquamarine_local_password
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - graquamarine_pgdata:/var/lib/postgresql/data
 

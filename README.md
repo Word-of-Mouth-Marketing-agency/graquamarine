@@ -39,8 +39,10 @@ For local development, the defaults in `.env.example` match the
 docker compose up -d
 ```
 
-This starts a PostgreSQL 16 container with the database, user, and password
-configured to match the `.env.example` defaults.
+This starts a PostgreSQL 16 container on host port **5433** (internal port 5432)
+with the database, user, and password configured to match the `.env.example`
+defaults. Port 5433 is used to avoid conflicts with any existing PostgreSQL
+on port 5432.
 
 ### Initialize the database
 
@@ -142,10 +144,11 @@ docker compose down -v
 docker compose up -d
 ```
 
-Make sure your `.env` `DATABASE_URL` matches the Docker credentials:
+Make sure your `.env` `DATABASE_URL` matches the Docker credentials
+(uses port **5433** to avoid conflicts with existing PostgreSQL on port 5432):
 
 ```
-DATABASE_URL="postgresql://graquamarine_user:graquamarine_local_password@localhost:5432/graquamarine"
+DATABASE_URL="postgresql://graquamarine_user:graquamarine_local_password@localhost:5433/graquamarine"
 ```
 
 Then sync the schema:
