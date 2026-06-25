@@ -3,20 +3,18 @@
 Foundation for the Graquamarine website, a water activities business in
 Hurghada, Egypt.
 
-The project now has a first homepage UI pass using the Graquamarine brand
-palette: #01A3CB (aqua), #282262 (navy), and white. Real contact
-details (phone, WhatsApp, Facebook, Instagram) are wired in, the hero uses a
-fading image slideshow, feature cards and activity cards show real photography,
-and section backgrounds use real imagery. The About, Activities, and Contact
-pages have been redesigned to match the homepage visual style with shared
-PageHero and SectionHeading components, styled activity cards, a branded
-reservation form, contact cards, and a map placeholder.
+The project has a complete UI using the Graquamarine brand palette: #01A3CB
+(aqua), #282262 (navy), and white. All pages (Home, About, Activities,
+Contact) are designed consistently with hero sections, image-led cards, and
+brand-styled forms. A reservation backend with admin dashboard is in place.
 
 ## Stack
 
 - Next.js App Router
 - TypeScript
 - Tailwind CSS
+- Prisma v5 (SQLite)
+- Resend (optional email)
 - ESLint
 - npm
 
@@ -24,13 +22,32 @@ reservation form, contact cards, and a map placeholder.
 
 ```bash
 npm install
+```
+
+Copy `.env.example` to `.env` and configure the variables:
+
+```
+DATABASE_URL="file:./dev.db"
+ADMIN_PASSWORD="change-this-password"
+RESERVATION_EMAIL_TO=""
+RESEND_API_KEY=""
+NEXT_PUBLIC_SITE_URL="https://graquamarine.com"
+```
+
+Initialize the database:
+
+```bash
+npx prisma generate
+npx prisma db push
+```
+
+Start the dev server:
+
+```bash
 npm run dev
 ```
 
 Open `http://localhost:3000`.
-
-Copy `.env.example` to `.env.local` when reservation or external service
-integrations begin.
 
 ## Scripts
 
@@ -41,36 +58,55 @@ integrations begin.
 
 ## Pages
 
-- `/` - homepage with hero slideshow, feature cards, activity preview, autoplay gallery carousel, and pre-footer CTA
-- `/about` - brand story, value cards, and call-to-action matching the homepage style
-- `/activities` - full activity catalog with styled image cards and frontend-only reservation form
+- `/` - homepage with hero slideshow, feature cards, activity preview, gallery carousel, and pre-footer CTA
+- `/about` - brand story, value cards, and CTA matching the homepage style
+- `/activities` - full activity catalog with styled image cards, reservation form connected to backend, and WhatsApp CTA
 - `/contact` - contact cards with real phone/social links, message form, map placeholder, and WhatsApp CTA
+- `/admin/login` - admin login form (password from ADMIN_PASSWORD env var)
+- `/admin` - admin dashboard (reservation table, status updates, admin notes)
 
 ## Activity Data
 
 Services and base prices live in `src/lib/activities.ts`.
 
-## Reservation Flow Plan
+## Reservation Flow
 
-Current state:
+1. User selects an activity from the `/activities` page and fills the reservation form.
+2. Form submits to `POST /api/reservations` with validation (known activity, valid date, required fields).
+3. Reservation is saved to SQLite with `PENDING` status.
+4. If `RESEND_API_KEY` is configured, an email notification is sent to `RESERVATION_EMAIL_TO`.
+5. Admin views and manages reservations at `/admin`.
 
-- The Activities page includes a frontend-only reservation form.
-- The form collects activity, date, full name, WhatsApp/phone, guest count,
-  hotel/pickup location, and notes.
-- Submission is intentionally disabled until a backend/email workflow is chosen.
+## Admin Dashboard
 
-Future flow:
+- Login at `/admin/login` with the `ADMIN_PASSWORD`
+- Dashboard shows all reservations sorted by newest first
+- Admin can update status (PENDING → CONFIRMED / CANCELLED)
+- Admin can add internal notes per reservation
+- Desktop: table view. Mobile: stacked cards
+- Authentication uses an httpOnly cookie (`graquamarine_admin`)
 
-1. Validate form fields on the client and server.
-2. Send reservation requests to an API route or external form handler.
-3. Email the Graquamarine team through Resend or similar.
-4. Store reservation records in Supabase or another database if needed.
-5. Add confirmation state, spam protection, and admin follow-up workflow.
+## Database
+
+- Prisma v5 with SQLite (`prisma/dev.db`)
+- Schema at `prisma/schema.prisma`
+- Updates: `npx prisma db push`
+- Client: `npx prisma generate`
+
+## Environment Variables
+
+| Variable | Required | Purpose |
+|----------|----------|---------|
+| DATABASE_URL | Yes | SQLite path (default: `file:./dev.db`) |
+| ADMIN_PASSWORD | Yes | Admin dashboard password |
+| NEXT_PUBLIC_SITE_URL | No | Production URL for metadata |
+| RESEND_API_KEY | No | Resend API key for email notifications |
+| RESERVATION_EMAIL_TO | No | Email to receive reservation alerts |
 
 ## Future Phases
 
-1. Visual design and brand direction.
-2. Real copywriting and media collection.
-3. Reservation backend integration.
-4. SEO pass: sitemap, robots, structured data, metadata, and local keywords.
-5. Deployment, domain, SSL, analytics, and post-launch checks.
+1. Brand direction approval and real copy.
+2. Spam protection (rate limiting, CAPTCHA).
+3. SEO pass: sitemap, robots, structured data, local keywords.
+4. Production migration (SQLite → Supabase/PostgreSQL).
+5. Deployment, domain, SSL, analytics.

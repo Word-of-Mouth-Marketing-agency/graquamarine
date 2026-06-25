@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { siteConfig } from "@/lib/site";
@@ -33,8 +34,15 @@ export function Navbar() {
       </div>
       <nav className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center justify-between gap-4">
-          <Link href="/" className="text-2xl font-bold text-white">
-            {siteConfig.name}
+          <Link href="/" className="block">
+            <Image
+              src="/images/logo/site-white-logo.png"
+              alt={siteConfig.name}
+              width={200}
+              height={48}
+              className="h-9 w-auto"
+              priority
+            />
           </Link>
           <Link
             href="/activities"
