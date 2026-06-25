@@ -28,10 +28,10 @@ export function ActivityCard({ activity }: ActivityCardProps) {
         <p className="mt-3 text-sm leading-6 text-brand-navy/75">
           {activity.summary}
         </p>
-        <div className="mt-auto pt-4">
+        <div className="mt-auto pt-5">
           <Link
             href="#reservation"
-            className="inline-flex rounded-full bg-brand-aqua px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-navy"
+            className="inline-flex h-11 w-full items-center justify-center rounded-full bg-brand-aqua text-sm font-semibold text-white transition hover:bg-brand-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-aqua focus-visible:ring-offset-2"
           >
             Reserve
           </Link>
