@@ -8,7 +8,7 @@ export function Footer() {
     <>
       <footer className="mt-auto bg-white">
         <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 md:grid-cols-[1.2fr_1fr_1fr]">
-          <div className="space-y-4">
+          <div>
             <Image
               src="/images/logo/site-logo.webp"
               alt={siteConfig.name}
@@ -16,10 +16,6 @@ export function Footer() {
               height={64}
               className="h-32 w-auto"
             />
-            <p className="max-w-sm text-sm leading-6 text-slate-600">
-              Premium, friendly Red Sea activities from Hurghada for diving,
-              snorkeling, island days, and private boat experiences.
-            </p>
           </div>
 
           <div>
