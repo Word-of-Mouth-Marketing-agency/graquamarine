@@ -13,7 +13,7 @@ export function Footer() {
   return (
     <>
       <footer className="mt-auto border-t border-brand-navy/10 bg-white">
-        <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-4 py-8 sm:flex-row sm:justify-between">
+        <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-4 py-6 sm:flex-row sm:justify-between">
           <Link href="/" className="shrink-0">
             <Image
               src="/images/logo/site-logo.webp"
@@ -55,7 +55,7 @@ export function Footer() {
       </footer>
 
       <div className="border-t border-brand-navy/10 bg-white">
-        <div className="mx-auto flex max-w-6xl flex-col items-center gap-2 px-4 py-5 text-center text-sm text-brand-navy/60 sm:flex-row sm:justify-between">
+        <div className="mx-auto flex max-w-6xl flex-col items-center gap-2 px-4 py-3 text-center text-sm text-brand-navy/60 sm:flex-row sm:justify-between">
           <p>
             &copy; {new Date().getFullYear()} {siteConfig.name}. All rights
             reserved.

@@ -151,26 +151,28 @@ export default function ContactPage() {
             label="Our Location"
             title={`Based in ${siteConfig.location}`}
           />
-          <div className="mt-10 overflow-hidden rounded-xl bg-brand-navy/5 ring-1 ring-brand-aqua/20">
-            <div className="flex flex-col items-center gap-4 px-4 py-16 text-center">
-              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-brand-aqua/10">
-                <FaMapMarkerAlt
-                  aria-hidden="true"
-                  className="h-6 w-6 text-brand-aqua"
-                />
-              </div>
-              <p className="text-lg font-semibold text-brand-navy">
-                {siteConfig.location}
-              </p>
-              <a
-                href="https://maps.app.goo.gl/dKgjq3LaabS61okWA"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex rounded-full bg-brand-aqua px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-navy"
-              >
-                Open in Google Maps
-              </a>
-            </div>
+          <div className="mt-10 overflow-hidden rounded-xl ring-1 ring-brand-aqua/20">
+            <iframe
+              title="Graquamarine location map"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d47738.68979216996!2d33.79121109085505!3d27.212890362150237!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x145287b2cd3dbbb3%3A0x2db807f98bd3c360!2sHurghada%2C%20Red%20Sea%20Governorate!5e0!3m2!1sen!2seg!4v1782387974062!5m2!1sen!2seg"
+              loading="lazy"
+              allowFullScreen
+              referrerPolicy="strict-origin-when-cross-origin"
+              className="h-72 w-full border-0 sm:h-96"
+            />
+          </div>
+          <div className="mt-4 text-center">
+            <p className="text-sm font-medium text-brand-navy/60">
+              {siteConfig.location}
+            </p>
+            <a
+              href="https://maps.app.goo.gl/dKgjq3LaabS61okWA"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-3 inline-flex rounded-full bg-brand-aqua px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-navy"
+            >
+              Open in Google Maps
+            </a>
           </div>
         </div>
       </section>
