@@ -39,7 +39,7 @@ export default function Home() {
             </p>
             <div className="flex flex-wrap gap-3">
               <Link
-                className="rounded-full bg-brand-aqua px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-slate-900/20 transition hover:bg-white"
+                className="rounded-full bg-brand-aqua px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-slate-900/20 transition hover:bg-white hover:text-brand-navy"
                 href="/activities"
               >
                 Reserve Now
@@ -196,7 +196,7 @@ export default function Home() {
           <div className="flex flex-wrap gap-3">
             <Link
               href="/activities"
-              className="rounded-full bg-brand-aqua px-6 py-3 font-semibold text-white transition hover:bg-white"
+              className="rounded-full bg-brand-aqua px-6 py-3 font-semibold text-white transition hover:bg-white hover:text-brand-navy"
             >
               Reserve Now
             </Link>

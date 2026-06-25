@@ -130,7 +130,7 @@ export default function ContactPage() {
             subtitle="Fill in the form and the Graquamarine team will get back to you shortly."
           />
           <div className="mt-10 grid gap-6 lg:grid-cols-2">
-            <div className="relative min-h-[320px] overflow-hidden rounded-xl sm:min-h-[400px]">
+            <div className="relative min-h-[240px] overflow-hidden rounded-xl sm:min-h-[400px]">
               <Image
                 src="/images/gallery/gallery1.jpg"
                 alt="Red Sea contact"
