@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { activities } from "@/lib/activities";
+import { HeroSlideshow } from "@/components/hero/HeroSlideshow";
 
 const featureCards = [
   {
@@ -31,8 +32,7 @@ export default function Home() {
   return (
     <div className="bg-white">
       <section className="relative isolate overflow-hidden bg-[#063b5c] text-white">
-        {/* TODO: Replace this gradient placeholder with the future hero video background. */}
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_20%_20%,rgba(119,215,211,0.55),transparent_28%),linear-gradient(135deg,#052f49_0%,#008aa6_48%,#77d7d3_100%)]" />
+        <HeroSlideshow />
         <div className="absolute inset-x-0 bottom-0 -z-10 h-32 bg-gradient-to-t from-[#063b5c]/70 to-transparent" />
         <div className="mx-auto flex min-h-[620px] max-w-6xl items-center px-4 pb-20 pt-44 sm:pt-48">
           <div className="max-w-2xl space-y-5">

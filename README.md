@@ -4,13 +4,13 @@ Foundation for the Graquamarine website, a water activities business in
 Hurghada, Egypt.
 
 The project now has a first homepage UI pass using the Graquamarine direction:
-deep ocean blue, aqua/turquoise, white, and warm sand accents. Real media is
-still placeholder, but real contact details (phone, WhatsApp, Facebook, and
-Instagram) are now wired in.
+deep ocean blue, aqua/turquoise, white, and warm sand accents. Real contact
+details (phone, WhatsApp, Facebook, and Instagram) are now wired in, and the
+hero uses a fading image slideshow with real Red Sea photos.
 
 The current homepage refinement uses a transparent non-sticky header over the
-hero, real social icon links, simplified hero copy, and a horizontal gallery
-placeholder carousel.
+hero, real social icon links, simplified hero copy, hero image slideshow, and a
+horizontal gallery placeholder carousel.
 
 ## Stack
 
@@ -41,7 +41,7 @@ integrations begin.
 
 ## Pages
 
-- `/` - homepage UI foundation with header, hero, activity cards, gallery placeholder, and CTA
+- `/` - homepage with fading hero image slideshow, activity cards, gallery placeholder, and CTAs
 - `/about` - placeholder business story and safety notes
 - `/activities` - activity catalog and frontend-only reservation form
 - `/contact` - placeholder contact details
