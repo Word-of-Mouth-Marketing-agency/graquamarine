@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
+import { sendContactNotification } from "@/lib/email";
 
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT_MAX = 5;
@@ -55,7 +56,14 @@ export async function POST(request: Request) {
 
     const trimmedEmail = email?.trim() || null;
 
-    if (!process.env.RESEND_API_KEY || !process.env.RESERVATION_EMAIL_TO) {
+    const emailResult = await sendContactNotification({
+      name: name.trim(),
+      phone: phone.trim(),
+      email: trimmedEmail,
+      message: message.trim(),
+    });
+
+    if (emailResult.skipped) {
       return NextResponse.json(
         {
           error:
@@ -64,24 +72,6 @@ export async function POST(request: Request) {
         { status: 503 }
       );
     }
-
-    const { Resend } = await import("resend");
-    const resend = new Resend(process.env.RESEND_API_KEY);
-
-    await resend.emails.send({
-      from: "Graquamarine <contact@graquamarine.com>",
-      to: process.env.RESERVATION_EMAIL_TO,
-      subject: "New Graquamarine Contact Message",
-      text: [
-        `Name: ${name.trim()}`,
-        `Phone: ${phone.trim()}`,
-        trimmedEmail ? `Email: ${trimmedEmail}` : null,
-        `Message: ${message.trim()}`,
-        `Submitted: ${new Date().toISOString()}`,
-      ]
-        .filter(Boolean)
-        .join("\n"),
-    });
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {

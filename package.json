@@ -12,6 +12,7 @@
     "db:push": "prisma db push",
     "db:seed": "node prisma/seed.mjs",
     "db:studio": "prisma studio",
+    "test:emails": "node scripts/test-emails.mjs",
     "dev:ready": "prisma generate && prisma db push && next dev"
   },
   "prisma": {
