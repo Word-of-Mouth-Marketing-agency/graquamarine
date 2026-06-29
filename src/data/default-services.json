@@ -1,0 +1,106 @@
+[
+  {
+    "slug": "intro-diving",
+    "name": "Intro Diving",
+    "description": "A beginner-friendly diving experience for first-time guests.",
+    "price": 50,
+    "imageUrl": "/images/activities/intro-diving.webp",
+    "highlights": [
+      "No experience required",
+      "Full instructor guidance",
+      "Shallow, clear-water dive site",
+      "All equipment included"
+    ]
+  },
+  {
+    "slug": "professional-diving",
+    "name": "Professional Diving",
+    "description": "Guided dives for certified or experienced divers.",
+    "price": 60,
+    "imageUrl": "/images/activities/professional-diving.webp",
+    "highlights": [
+      "For certified divers",
+      "Guided Red Sea dive sites",
+      "Reef, wall, and drift dives",
+      "Equipment available on request"
+    ]
+  },
+  {
+    "slug": "snorkeling",
+    "name": "Snorkeling",
+    "description": "A relaxed Red Sea snorkeling trip for families and groups.",
+    "price": 40,
+    "imageUrl": "/images/activities/snorkeling.webp",
+    "highlights": [
+      "Family-friendly and beginner-safe",
+      "Shallow reef access",
+      "All snorkeling gear included",
+      "Snacks and soft drinks provided"
+    ]
+  },
+  {
+    "slug": "paradise-island",
+    "name": "Paradise Island",
+    "description": "A day trip to Paradise Island with sea activities.",
+    "price": 30,
+    "imageUrl": "/images/activities/paradise-island.jpg",
+    "highlights": [
+      "Boat transfer included",
+      "Beach time and swimming",
+      "Snorkeling stops along the way",
+      "Lunch and soft drinks provided"
+    ]
+  },
+  {
+    "slug": "open-water-diver-course",
+    "name": "Open Water Diver Course",
+    "description": "Entry-level diver certification course.",
+    "price": 350,
+    "imageUrl": "/images/activities/openwater-divercourse.webp",
+    "highlights": [
+      "Classroom, pool, and open-water training",
+      "Full equipment during the course",
+      "Small group sizes",
+      "Internationally recognised curriculum"
+    ]
+  },
+  {
+    "slug": "advanced-open-water-diver-course",
+    "name": "Advanced Open Water Diver Course",
+    "description": "Advanced certification course for certified divers.",
+    "price": 300,
+    "imageUrl": "/images/activities/advanced-openwater-divercourse.webp",
+    "highlights": [
+      "Builds on existing certification",
+      "Deep and navigation dives",
+      "Specialty skill modules",
+      "Small group instruction"
+    ]
+  },
+  {
+    "slug": "private-boat",
+    "name": "Private Boat",
+    "description": "Private boat reservation for custom group trips.",
+    "price": 500,
+    "imageUrl": "/images/activities/private-boat.webp",
+    "highlights": [
+      "Full boat exclusively for your group",
+      "Custom itinerary - you choose the stops",
+      "Captain and crew included",
+      "Flat price, not charged per guest"
+    ]
+  },
+  {
+    "slug": "orange-bay",
+    "name": "Orange Bay",
+    "description": "A Red Sea island day trip to Orange Bay.",
+    "price": 30,
+    "imageUrl": "/images/activities/orange-bay.jpg",
+    "highlights": [
+      "Boat transfer included",
+      "Beach loungers and shaded areas",
+      "Shallow, calm water for swimming",
+      "Soft drinks included"
+    ]
+  }
+]

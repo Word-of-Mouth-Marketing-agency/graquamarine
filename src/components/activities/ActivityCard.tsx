@@ -1,5 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
+import { ActivityImage } from "@/components/activities/ActivityImage";
 import type { Activity } from "@/types";
 
 type ActivityCardProps = {
@@ -10,10 +10,9 @@ export function ActivityCard({ activity }: ActivityCardProps) {
   return (
     <article className="flex flex-col overflow-hidden rounded-lg border border-brand-aqua/20 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
       <div className="relative h-44 overflow-hidden">
-        <Image
+        <ActivityImage
           src={activity.image}
           alt={activity.name}
-          fill
           className="object-cover object-center"
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
         />

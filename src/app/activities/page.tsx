@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
+import { ActivityImage } from "@/components/activities/ActivityImage";
 import { ReservationForm } from "@/components/activities/ReservationForm";
 import { PageHero } from "@/components/ui/PageHero";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { activities } from "@/lib/activities";
+import { getPublicActivities } from "@/lib/services";
 import { siteConfig } from "@/lib/site";
 import { FaWhatsapp } from "react-icons/fa";
 import type { PricingMode } from "@/types";
@@ -19,7 +19,11 @@ export const metadata: Metadata = {
     "Browse Graquamarine diving, snorkeling, island trips, courses, and private boat activities in Hurghada.",
 };
 
-export default function ActivitiesPage() {
+export const dynamic = "force-dynamic";
+
+export default async function ActivitiesPage() {
+  const activities = await getPublicActivities();
+
   return (
     <div className="bg-white">
       <PageHero title="Activities" />
@@ -38,10 +42,9 @@ export default function ActivitiesPage() {
                   i % 2 === 1 ? "md:order-2" : ""
                 }`}
               >
-                <Image
+                <ActivityImage
                   src={activity.image}
                   alt={activity.name}
-                  fill
                   className="object-cover object-center"
                   sizes="(max-width: 768px) 100vw, 40vw"
                 />
@@ -101,7 +104,7 @@ export default function ActivitiesPage() {
             title="Send a booking request"
             subtitle="Select the activities you are interested in and enter your details below. The Graquamarine team will get back to you to confirm."
           />
-          <ReservationForm />
+          <ReservationForm activities={activities} />
         </div>
       </section>
 

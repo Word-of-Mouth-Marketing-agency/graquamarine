@@ -1,0 +1,22 @@
+[
+  {
+    "imageUrl": "/images/gallery/gallery1.jpg",
+    "alt": "Graquamarine Red Sea gallery image 1"
+  },
+  {
+    "imageUrl": "/images/gallery/gallery2.jpg",
+    "alt": "Graquamarine Red Sea gallery image 2"
+  },
+  {
+    "imageUrl": "/images/gallery/gallery3.jpg",
+    "alt": "Graquamarine Red Sea gallery image 3"
+  },
+  {
+    "imageUrl": "/images/gallery/gallery4.jpg",
+    "alt": "Graquamarine Red Sea gallery image 4"
+  },
+  {
+    "imageUrl": "/images/gallery/gallery5.jpg",
+    "alt": "Graquamarine Red Sea gallery image 5"
+  }
+]

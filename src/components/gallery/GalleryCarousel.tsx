@@ -3,19 +3,16 @@
 import Image from "next/image";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-
-const galleryImages = [
-  { src: "/images/gallery/gallery1.jpg", alt: "Graquamarine Red Sea gallery image 1" },
-  { src: "/images/gallery/gallery2.jpg", alt: "Graquamarine Red Sea gallery image 2" },
-  { src: "/images/gallery/gallery3.jpg", alt: "Graquamarine Red Sea gallery image 3" },
-  { src: "/images/gallery/gallery4.jpg", alt: "Graquamarine Red Sea gallery image 4" },
-  { src: "/images/gallery/gallery5.jpg", alt: "Graquamarine Red Sea gallery image 5" },
-];
+import type { GalleryImageData } from "@/types";
 
 const AUTOPLAY_MS = 4000;
 
-export function GalleryCarousel() {
-  const [currentIndex, setCurrentIndex] = useState(0);
+type GalleryCarouselProps = {
+  images: GalleryImageData[];
+};
+
+export function GalleryCarousel({ images }: GalleryCarouselProps) {
+  const [currentIndex, setCurrentIndex] = useState(1);
   const [slideWidth, setSlideWidth] = useState(0);
   const [visibleCount, setVisibleCount] = useState(1);
   const [disableTransition, setDisableTransition] = useState(false);
@@ -31,7 +28,10 @@ export function GalleryCarousel() {
     const sw = firstSlide.offsetWidth;
     const gap = 16;
     const vw = viewportRef.current.clientWidth;
-    const count = Math.max(1, Math.floor((vw + gap) / (sw + gap)));
+    const count = Math.min(
+      Math.max(1, images.length),
+      Math.max(1, Math.floor((vw + gap) / (sw + gap)))
+    );
     setSlideWidth(sw);
     if (count !== visibleCountRef.current) {
       visibleCountRef.current = count;
@@ -44,7 +44,7 @@ export function GalleryCarousel() {
         });
       });
     }
-  }, []);
+  }, [images.length]);
 
   useEffect(() => {
     measure();
@@ -53,14 +53,14 @@ export function GalleryCarousel() {
   }, [measure]);
 
   const startIndex = visibleCount;
-  const realCount = galleryImages.length;
+  const realCount = images.length;
   const appendTrigger = startIndex + realCount;
 
   const extendedImages = useMemo(() => {
-    const prepend = galleryImages.slice(-visibleCount);
-    const append = galleryImages.slice(0, visibleCount);
-    return [...prepend, ...galleryImages, ...append];
-  }, [visibleCount]);
+    const prepend = images.slice(-visibleCount);
+    const append = images.slice(0, visibleCount);
+    return [...prepend, ...images, ...append];
+  }, [images, visibleCount]);
 
   const extendedMaxIndex = Math.max(0, extendedImages.length - visibleCount);
 
@@ -73,6 +73,8 @@ export function GalleryCarousel() {
   }, []);
 
   useEffect(() => {
+    if (realCount === 0) return;
+
     if (currentIndex >= appendTrigger) {
       const snapTo = currentIndex - realCount;
       const timer = setTimeout(() => {
@@ -102,25 +104,34 @@ export function GalleryCarousel() {
   }, [currentIndex, startIndex, appendTrigger, realCount]);
 
   useEffect(() => {
+    if (realCount <= visibleCount) return;
     const id = setInterval(goNext, AUTOPLAY_MS);
     return () => clearInterval(id);
-  }, [goNext]);
+  }, [goNext, realCount, visibleCount]);
 
   const translateX = currentIndex * (slideWidth + 16);
 
-  const firstVisibleImageIndex = (currentIndex - startIndex + realCount) % realCount;
+  const firstVisibleImageIndex =
+    realCount > 0 ? (currentIndex - startIndex + realCount) % realCount : 0;
+  const canNavigate = realCount > visibleCount;
+
+  if (realCount === 0) {
+    return null;
+  }
 
   return (
     <div className="mx-auto mt-8 max-w-5xl">
       <div className="flex items-center gap-2 sm:gap-3">
-        <button
-          onClick={goPrev}
-          type="button"
-          aria-label="Previous gallery images"
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-aqua text-white shadow-lg transition hover:scale-105 hover:bg-brand-navy focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-aqua active:scale-95 sm:h-12 sm:w-12"
-        >
-          <FaChevronLeft aria-hidden="true" className="h-4 w-4 sm:h-5 sm:w-5" />
-        </button>
+        {canNavigate && (
+          <button
+            onClick={goPrev}
+            type="button"
+            aria-label="Previous gallery images"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-aqua text-white shadow-lg transition hover:scale-105 hover:bg-brand-navy focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-aqua active:scale-95 sm:h-12 sm:w-12"
+          >
+            <FaChevronLeft aria-hidden="true" className="h-4 w-4 sm:h-5 sm:w-5" />
+          </button>
+        )}
 
         <div
           ref={viewportRef}
@@ -142,7 +153,7 @@ export function GalleryCarousel() {
                 className="relative h-72 w-full shrink-0 overflow-hidden rounded-xl shadow-md sm:h-80 sm:w-1/2 lg:h-96 lg:w-1/3"
               >
                 <Image
-                  src={img.src}
+                  src={img.imageUrl}
                   alt={img.alt}
                   fill
                   className="object-cover object-center"
@@ -153,17 +164,19 @@ export function GalleryCarousel() {
           </div>
         </div>
 
-        <button
-          onClick={goNext}
-          type="button"
-          aria-label="Next gallery images"
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-aqua text-white shadow-lg transition hover:scale-105 hover:bg-brand-navy focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-aqua active:scale-95 sm:h-12 sm:w-12"
-        >
-          <FaChevronRight aria-hidden="true" className="h-4 w-4 sm:h-5 sm:w-5" />
-        </button>
+        {canNavigate && (
+          <button
+            onClick={goNext}
+            type="button"
+            aria-label="Next gallery images"
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-brand-aqua text-white shadow-lg transition hover:scale-105 hover:bg-brand-navy focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-aqua active:scale-95 sm:h-12 sm:w-12"
+          >
+            <FaChevronRight aria-hidden="true" className="h-4 w-4 sm:h-5 sm:w-5" />
+          </button>
+        )}
       </div>
 
-      {realCount > 0 && (
+      {canNavigate && (
         <div className="mt-6 flex items-center justify-center gap-2">
           {Array.from({ length: realCount }).map((_, i) => (
             <button

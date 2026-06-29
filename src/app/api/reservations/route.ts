@@ -1,13 +1,22 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { activities } from "@/lib/activities";
+import { getPublicActivities } from "@/lib/services";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 
-const ALLOWED_SLUGS = new Set(activities.map((a) => a.slug));
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT_MAX = 5;
 
-type ActivityItem = { name: string; price: number; mode: string };
+type ActivityItem = {
+  activity_id: string;
+  activity_name_snapshot: string;
+  unit_price_at_booking: number;
+  guest_count: number;
+  line_total: number;
+  pricing_mode: string;
+  name: string;
+  price: number;
+  mode: string;
+};
 
 function normalizeOptionalString(value: unknown): string | null {
   return typeof value === "string" && value.trim() ? value.trim() : null;
@@ -48,6 +57,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: true }, { status: 201 });
     }
 
+    const activities = await getPublicActivities();
+    const availableActivities = activities.filter((a) => a.isActive);
+    const allowedSlugs = new Set(availableActivities.map((a) => a.slug));
+    const activityBySlug = new Map(activities.map((a) => [a.slug, a]));
     const errors: string[] = [];
     const selected: typeof activities = [];
 
@@ -55,11 +68,16 @@ export async function POST(request: Request) {
       errors.push("Select at least one activity.");
     } else {
       for (const slug of selectedSlugs) {
-        if (!ALLOWED_SLUGS.has(slug)) {
+        const requestedActivity = activityBySlug.get(slug);
+        if (requestedActivity && !requestedActivity.isActive) {
+          errors.push(`${requestedActivity.name} is currently unavailable.`);
+          continue;
+        }
+        if (!allowedSlugs.has(slug)) {
           errors.push(`Unknown activity: ${slug}`);
           continue;
         }
-        const activity = activities.find((a) => a.slug === slug)!;
+        const activity = availableActivities.find((a) => a.slug === slug)!;
         selected.push(activity);
       }
     }
@@ -96,9 +114,20 @@ export async function POST(request: Request) {
     const activityList: ActivityItem[] = [];
 
     for (const a of selected) {
-      const price = a.pricingMode === "flat" ? a.basePriceUsd : a.basePriceUsd * guestCount;
-      totalPrice += price;
-      activityList.push({ name: a.name, price: a.basePriceUsd, mode: a.pricingMode });
+      const activityGuestCount = a.pricingMode === "flat" ? 1 : guestCount;
+      const lineTotal = a.basePriceUsd * activityGuestCount;
+      totalPrice += lineTotal;
+      activityList.push({
+        activity_id: a.slug,
+        activity_name_snapshot: a.name,
+        unit_price_at_booking: a.basePriceUsd,
+        guest_count: activityGuestCount,
+        line_total: lineTotal,
+        pricing_mode: a.pricingMode,
+        name: a.name,
+        price: a.basePriceUsd,
+        mode: a.pricingMode,
+      });
     }
 
     const reservation = await prisma.reservation.create({
@@ -121,13 +150,14 @@ export async function POST(request: Request) {
         const { Resend } = await import("resend");
         const resend = new Resend(process.env.RESEND_API_KEY);
         await resend.emails.send({
-          from: "Graquamarine <reservations@graquamarine.com>",
+          from: process.env.EMAIL_FROM || "Graquamarine <reservations@graquamarine.com>",
           to: process.env.RESERVATION_EMAIL_TO,
           subject: `New Reservation - ${selected.length} activity(s)`,
           text: [
             `Activities:`,
             ...activityList.map(
-              (a) => `  - ${a.name} ($${a.price} ${a.mode === "flat" ? "flat" : "per guest"})`
+              (a) =>
+                `  - ${a.activity_name_snapshot} ($${a.unit_price_at_booking} ${a.pricing_mode === "flat" ? "flat" : "per guest"} x ${a.guest_count} = $${a.line_total})`
             ),
             `Guests: ${guestCount}`,
             `Total: $${totalPrice}`,

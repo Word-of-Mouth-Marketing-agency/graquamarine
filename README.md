@@ -31,7 +31,8 @@ cp .env.example .env
 
 For local development, the defaults in `.env.example` match the
 `docker-compose.yml` configuration. Edit `.env` to set a custom
-`ADMIN_PASSWORD`.
+`ADMIN_NAME`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`, and `ADMIN_SESSION_SECRET`.
+`ADMIN_PASSWORD` is only used when seeding the first admin account.
 
 ### Start PostgreSQL (Docker)
 
@@ -48,11 +49,14 @@ on port 5432.
 
 ```bash
 npx prisma generate
-npx prisma migrate deploy
+npx prisma migrate dev
+npx prisma db seed
 ```
 
-This applies committed Prisma migrations to the local Docker PostgreSQL
-database. Use `npm run db:push` only for throwaway local schema experiments.
+This applies Prisma migrations and creates the first admin account from
+`ADMIN_NAME`, `ADMIN_EMAIL`, and `ADMIN_PASSWORD` if no admin exists yet. The
+seed is safe to run again; it will not overwrite an existing admin account. Use
+`npm run db:push` only for throwaway local schema experiments.
 
 ### Start the dev server
 
@@ -68,13 +72,14 @@ Quick start after `npm install` and `.env` setup:
 
 ```bash
 docker compose up -d               # start PostgreSQL
-npx prisma migrate deploy           # apply committed migrations
+npx prisma migrate dev              # apply local migrations
+npx prisma db seed                  # create first admin if needed
 npm run dev                         # start Next.js
 ```
 
 1. Submit a test reservation at `http://localhost:3000/activities`
 2. Open `http://localhost:3000/admin`
-3. Login with the `ADMIN_PASSWORD` from your `.env`
+3. Login with `ADMIN_EMAIL` and `ADMIN_PASSWORD` from your `.env`
 4. You should see the submitted reservation in the dashboard
 5. Optional: browse the database with `npm run db:studio`
 
@@ -92,6 +97,7 @@ npm run dev                         # start Next.js
 - `npm run start` - run production server
 - `npm run db:generate` - regenerate Prisma Client
 - `npm run db:push` - push schema directly to a local database
+- `npm run db:seed` - seed default content and first admin account
 - `npm run db:studio` - open Prisma Studio
 
 ## Pages
@@ -102,8 +108,9 @@ npm run dev                         # start Next.js
 | `/about` | Brand story, value cards, CTA |
 | `/activities` | Activity catalog, reservation form, WhatsApp CTA |
 | `/contact` | Contact cards, message form, map placeholder, WhatsApp CTA |
-| `/admin/login` | Admin login (password from `ADMIN_PASSWORD`) |
+| `/admin/login` | Admin login with admin email and password |
 | `/admin` | Admin dashboard (reservations, status, notes) |
+| `/admin/settings` | Admin account profile, email, and password settings |
 
 ## Reservation Flow
 
@@ -114,16 +121,21 @@ npm run dev                         # start Next.js
 5. Admin manages reservations at `/admin`.
 
 Reservation fields: activities, guests, preferred date, full name, WhatsApp /
-phone, hotel / pickup location, and message / notes. The server computes total
+phone, and message / notes. The server computes total
 price itself: per-guest activities multiply by guests, while Private Boat is a
 flat one-time price.
 
 ## Admin Dashboard
 
-- Login at `/admin/login` with the `ADMIN_PASSWORD` env variable.
-- Cookie-based auth (`graquamarine_admin`, httpOnly, SHA-256 hashed).
+- Login at `/admin/login` with the seeded admin email and password.
+- The first admin is created by `npx prisma db seed` from `ADMIN_NAME`,
+  `ADMIN_EMAIL`, and `ADMIN_PASSWORD`.
+- `ADMIN_PASSWORD` is only for initial seed/bootstrap; after the account exists,
+  login verifies the database `passwordHash`.
+- Cookie-based auth (`graquamarine_admin`, httpOnly, signed session token).
 - Desktop table view. Mobile stacked cards.
 - Update status (Pending / Confirmed / Cancelled) and add internal notes.
+- Settings page for changing admin name, email, and password.
 - Refresh button. Logout button.
 - Admin login is rate-limited by IP.
 
@@ -140,9 +152,13 @@ flat one-time price.
 | Variable | Required | Purpose |
 |----------|----------|---------|
 | `DATABASE_URL` | Yes | PostgreSQL connection string |
-| `ADMIN_PASSWORD` | Yes | Admin dashboard password |
+| `ADMIN_NAME` | Yes for seed | First admin display name |
+| `ADMIN_EMAIL` | Yes for seed | First admin login email |
+| `ADMIN_PASSWORD` | Yes for seed | First admin password, hashed during seed only |
+| `ADMIN_SESSION_SECRET` | Recommended | Secret for signing admin session cookies |
 | `NEXT_PUBLIC_SITE_URL` | No | Production URL |
 | `RESEND_API_KEY` | No | Resend API key for email notifications |
+| `EMAIL_FROM` | No | Sender address for admin password reset emails |
 | `RESERVATION_EMAIL_TO` | No | Email to receive reservation alerts |
 
 ## Troubleshooting
@@ -246,8 +262,12 @@ Create `.env` in the project root:
 
 ```
 DATABASE_URL="postgresql://graquamarine_user:STRONG_PASSWORD@localhost:5432/graquamarine"
+ADMIN_NAME="Graquamarine Admin"
+ADMIN_EMAIL="admin@graquamarine.local"
 ADMIN_PASSWORD="replace-with-a-long-secure-password"
+ADMIN_SESSION_SECRET="replace-with-a-long-random-session-secret"
 RESEND_API_KEY=""
+EMAIL_FROM="Graquamarine <onboarding@resend.dev>"
 RESERVATION_EMAIL_TO=""
 NEXT_PUBLIC_SITE_URL="https://graquamarine.com"
 ```
@@ -258,6 +278,7 @@ NEXT_PUBLIC_SITE_URL="https://graquamarine.com"
 npm install
 npx prisma generate
 npx prisma migrate deploy
+npx prisma db seed
 npm run build
 pm2 start npm --name graquamarine -- start
 pm2 save
@@ -304,7 +325,8 @@ sudo certbot --nginx -d graquamarine.com -d www.graquamarine.com
 ### 7. Production warnings
 
 - Do not commit `.env` or `prisma/dev.db`.
-- Use a strong `ADMIN_PASSWORD`.
+- Use a strong `ADMIN_PASSWORD` for the first seed and a strong
+  `ADMIN_SESSION_SECRET` for cookie signing.
 - Set up PostgreSQL backups (`pg_dump` cron job).
 - Consider CAPTCHA before heavy traffic if spam increases.
 - Configure Resend DNS records if using email notifications.
@@ -318,6 +340,7 @@ git pull
 npm install
 npx prisma generate
 npx prisma migrate deploy
+npx prisma db seed
 npm run build
 pm2 restart graquamarine
 ```

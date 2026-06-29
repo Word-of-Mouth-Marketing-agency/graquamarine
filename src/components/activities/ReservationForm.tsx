@@ -1,8 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { activities } from "@/lib/activities";
-import type { PricingMode } from "@/types";
+import type { Activity, PricingMode } from "@/types";
 
 const inputClass =
   "mt-1 w-full rounded-lg border border-brand-navy/20 px-3 py-2.5 text-brand-navy placeholder:text-brand-navy/40 transition focus:border-brand-aqua focus:ring-2 focus:ring-brand-aqua/20 focus:outline-none disabled:cursor-not-allowed disabled:bg-brand-navy/[0.03] disabled:text-brand-navy/40";
@@ -13,7 +12,11 @@ function pricingLabel(mode: PricingMode): string {
   return mode === "flat" ? "flat boat price" : "per guest";
 }
 
-export function ReservationForm() {
+type ReservationFormProps = {
+  activities: Activity[];
+};
+
+export function ReservationForm({ activities }: ReservationFormProps) {
   const [selectedSlugs, setSelectedSlugs] = useState<Set<string>>(new Set());
   const [guests, setGuests] = useState("1");
   const [preferredDate, setPreferredDate] = useState("");
@@ -32,13 +35,16 @@ export function ReservationForm() {
     let sum = 0;
     for (const slug of selectedSlugs) {
       const a = activities.find((x) => x.slug === slug);
-      if (!a) continue;
+      if (!a || !a.isActive) continue;
       sum += a.pricingMode === "flat" ? a.basePriceUsd : a.basePriceUsd * guestCount;
     }
     return sum;
-  }, [selectedSlugs, guestCount]);
+  }, [activities, selectedSlugs, guestCount]);
 
   function toggleSlug(slug: string) {
+    const activity = activities.find((item) => item.slug === slug);
+    if (!activity?.isActive) return;
+
     setSelectedSlugs((prev) => {
       const next = new Set(prev);
       if (next.has(slug)) next.delete(slug);
@@ -159,22 +165,31 @@ export function ReservationForm() {
           {activities.map((a) => (
             <label
               key={a.slug}
-              className={`flex cursor-pointer items-center gap-3 rounded-lg border px-4 py-3 transition ${
+              className={`flex items-center gap-3 rounded-lg border px-4 py-3 transition ${
                 selectedSlugs.has(a.slug)
                   ? "border-brand-aqua bg-brand-aqua/5"
-                  : "border-brand-navy/15 hover:border-brand-navy/30"
-              } ${submitting ? "pointer-events-none opacity-60" : ""}`}
+                  : a.isActive
+                    ? "border-brand-navy/15 hover:border-brand-navy/30"
+                    : "border-brand-navy/10 bg-brand-navy/[0.02]"
+              } ${a.isActive ? "cursor-pointer" : "cursor-not-allowed opacity-60"} ${
+                submitting ? "pointer-events-none opacity-60" : ""
+              }`}
             >
               <input
                 type="checkbox"
                 checked={selectedSlugs.has(a.slug)}
                 onChange={() => toggleSlug(a.slug)}
                 className="h-4 w-4 shrink-0 accent-brand-aqua"
-                disabled={submitting}
+                disabled={submitting || !a.isActive}
               />
               <div className="flex flex-1 items-center justify-between gap-2">
                 <span className="text-sm font-medium text-brand-navy">
                   {a.name}
+                  {!a.isActive && (
+                    <span className="ml-2 rounded-full bg-red-50 px-2 py-0.5 text-[10px] font-semibold text-red-700">
+                      Unavailable
+                    </span>
+                  )}
                 </span>
                 <span className="shrink-0 text-sm text-brand-navy/50">
                   ${a.basePriceUsd} <span className="text-xs">({pricingLabel(a.pricingMode)})</span>

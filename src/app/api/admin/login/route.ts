@@ -1,9 +1,16 @@
 import { NextResponse } from "next/server";
-import { setAdminCookie } from "@/lib/admin-auth";
+import { createAdminSession } from "@/lib/admin-auth";
+import {
+  normalizeAdminEmail,
+  isValidAdminEmail,
+} from "@/lib/admin-account";
+import { prisma } from "@/lib/prisma";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
+import { verifyPassword } from "@/lib/password";
 
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT_MAX = 5;
+const INVALID_LOGIN_ERROR = "Invalid email or password.";
 
 export async function POST(request: Request) {
   try {
@@ -24,33 +31,32 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { password } = body;
+    const { email: rawEmail, password } = body;
+    const email = normalizeAdminEmail(rawEmail);
 
-    if (!password || typeof password !== "string") {
+    if (!email || !isValidAdminEmail(email) || typeof password !== "string" || !password) {
       return NextResponse.json(
-        { error: "Password is required." },
+        { error: INVALID_LOGIN_ERROR },
         { status: 400 }
       );
     }
 
-    const adminPassword = process.env.ADMIN_PASSWORD;
+    const admin = await prisma.adminUser.findUnique({
+      where: { email },
+      select: { id: true, passwordHash: true },
+    });
+    const passwordMatches = admin
+      ? await verifyPassword(password, admin.passwordHash)
+      : false;
 
-    if (!adminPassword) {
-      console.error("ADMIN_PASSWORD environment variable is not set.");
+    if (!admin || !passwordMatches) {
       return NextResponse.json(
-        { error: "Server is not configured for admin access." },
-        { status: 500 }
-      );
-    }
-
-    if (password !== adminPassword) {
-      return NextResponse.json(
-        { error: "Invalid password." },
+        { error: INVALID_LOGIN_ERROR },
         { status: 401 }
       );
     }
 
-    await setAdminCookie();
+    await createAdminSession(admin);
 
     return NextResponse.json({ success: true });
   } catch (error) {

@@ -1,8 +1,13 @@
-import Image from "next/image";
 import Link from "next/link";
-import { activities } from "@/lib/activities";
+import Image from "next/image";
+import { ActivityImage } from "@/components/activities/ActivityImage";
 import { HeroSlideshow } from "@/components/hero/HeroSlideshow";
 import { GalleryCarousel } from "@/components/gallery/GalleryCarousel";
+import { getPublicGalleryImages } from "@/lib/gallery-images";
+import { getPublicHeroSlides } from "@/lib/hero-slides";
+import { getPublicActivities } from "@/lib/services";
+
+export const dynamic = "force-dynamic";
 
 const featureCards = [
   {
@@ -22,11 +27,17 @@ const featureCards = [
   },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const [activities, heroSlides, galleryImages] = await Promise.all([
+    getPublicActivities(),
+    getPublicHeroSlides(),
+    getPublicGalleryImages(),
+  ]);
+
   return (
     <div className="bg-white">
       <section className="relative isolate overflow-hidden bg-brand-navy text-white">
-        <HeroSlideshow />
+        <HeroSlideshow slides={heroSlides} />
         <div className="absolute inset-x-0 bottom-0 -z-10 h-32 bg-gradient-to-t from-brand-navy/70 to-transparent" />
         <div className="mx-auto flex min-h-[620px] max-w-6xl items-center px-4 pb-20 pt-44 sm:min-h-[90vh] sm:pt-48">
           <div className="max-w-2xl space-y-5">
@@ -126,19 +137,20 @@ export default function Home() {
                 className="flex flex-col overflow-hidden rounded-lg border border-brand-aqua/20 bg-white shadow-sm"
               >
                 <div className="relative h-44 overflow-hidden">
-                  <Image
+                  <ActivityImage
                     src={activity.image}
                     alt={activity.name}
-                    fill
                     className="object-cover object-center"
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                   />
                 </div>
                 <div className="flex flex-1 flex-col p-5">
                   <div className="flex items-start justify-between gap-3">
-                    <h3 className="text-lg font-bold text-brand-navy">
-                      {activity.name}
-                    </h3>
+                    <div>
+                      <h3 className="text-lg font-bold text-brand-navy">
+                        {activity.name}
+                      </h3>
+                    </div>
                     <p className="shrink-0 font-semibold text-brand-aqua">
                       ${activity.basePriceUsd}
                     </p>
@@ -147,12 +159,18 @@ export default function Home() {
                     {activity.summary}
                   </p>
                   <div className="mt-auto pt-5">
-                    <Link
-                      href="/activities"
-                      className="inline-flex h-11 w-full items-center justify-center rounded-full bg-brand-aqua text-sm font-semibold text-white transition hover:bg-brand-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-aqua focus-visible:ring-offset-2"
-                    >
-                      Reserve
-                    </Link>
+                    {activity.isActive ? (
+                      <Link
+                        href="/activities"
+                        className="inline-flex h-11 w-full items-center justify-center rounded-full bg-brand-aqua text-sm font-semibold text-white transition hover:bg-brand-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-aqua focus-visible:ring-offset-2"
+                      >
+                        Reserve
+                      </Link>
+                    ) : (
+                      <span className="inline-flex h-11 w-full items-center justify-center rounded-full bg-brand-navy/10 text-sm font-semibold text-brand-navy/45">
+                        Unavailable
+                      </span>
+                    )}
                   </div>
                 </div>
               </article>
@@ -172,7 +190,7 @@ export default function Home() {
               Photos from our Red Sea adventures
             </p>
           </div>
-          <GalleryCarousel />
+          <GalleryCarousel images={galleryImages} />
         </div>
       </section>
 
