@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getPublicActivities } from "@/lib/services";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
+import { sendReservationNotification } from "@/lib/email";
 
 const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 const RATE_LIMIT_MAX = 5;
@@ -156,34 +157,23 @@ export async function POST(request: Request) {
       },
     });
 
-    if (process.env.RESEND_API_KEY && process.env.RESERVATION_EMAIL_TO) {
-      try {
-        const { Resend } = await import("resend");
-        const resend = new Resend(process.env.RESEND_API_KEY);
-        await resend.emails.send({
-          from: process.env.EMAIL_FROM || "Graquamarine <reservations@graquamarine.com>",
-          to: process.env.RESERVATION_EMAIL_TO,
-          subject: `New Reservation - ${selected.length} activity(s)`,
-          text: [
-            `Activities:`,
-            ...activityList.map(
-              (a) =>
-                `  - ${a.activity_name_snapshot} ($${a.unit_price_at_booking} ${a.pricing_mode === "flat" ? "flat" : "per guest"} x ${a.guest_count} = $${a.line_total})`
-            ),
-            `Guests: ${guestCount}`,
-            `Total: $${totalPrice}`,
-            `Preferred date: ${parsedPreferredDate!.toISOString().slice(0, 10)}`,
-            `Name: ${reservationName.trim()}`,
-            `Phone: ${phone.trim()}`,
-            `Hotel / pickup: ${normalizeOptionalString(hotelLocation) || "Not provided"}`,
-            `Message: ${normalizeOptionalString(message) || "Not provided"}`,
-            `Created: ${reservation.createdAt.toISOString()}`,
-          ].join("\n"),
-        });
-      } catch {
-        // Email notification failed silently
-      }
-    }
+    sendReservationNotification({
+      reservationId: reservation.id,
+      activityNames: selected.map((a) => a.name).join(", "),
+      activityBreakdown: activityList.map(
+        (a) =>
+          `${a.activity_name_snapshot} — $${a.unit_price_at_booking} ${a.pricing_mode === "flat" ? "(flat boat price)" : "per guest"} x ${a.guest_count} = $${a.line_total}`
+      ),
+      guestCount,
+      preferredDate: rawPreferredDate,
+      fullName: reservationName.trim(),
+      phone: phone.trim(),
+      hotelLocation: normalizeOptionalString(hotelLocation),
+      message: normalizeOptionalString(message),
+      totalPrice,
+      status: reservation.status,
+      createdAt: reservation.createdAt.toISOString(),
+    }).catch(() => {});
 
     return NextResponse.json(
       { success: true, id: reservation.id, totalPrice },
