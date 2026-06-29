@@ -99,6 +99,8 @@ npm run dev                         # start Next.js
 - `npm run db:push` - push schema directly to a local database
 - `npm run db:seed` - seed default content and first admin account
 - `npm run db:studio` - open Prisma Studio
+- `npm run test:emails` - send test emails via Resend
+- `npm run typecheck` - run TypeScript type checking
 
 ## Pages
 
@@ -160,6 +162,7 @@ flat one-time price.
 | `RESEND_API_KEY` | No | Resend API key for email notifications |
 | `EMAIL_FROM` | No | Sender address for admin password reset emails |
 | `RESERVATION_EMAIL_TO` | No | Email to receive reservation alerts |
+| `CONTACT_EMAIL_TO` | No | Email to receive contact form messages (falls back to RESERVATION_EMAIL_TO) |
 
 ## Troubleshooting
 
