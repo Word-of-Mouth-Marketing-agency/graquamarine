@@ -22,7 +22,6 @@ export function ReservationForm({ activities }: ReservationFormProps) {
   const [preferredDate, setPreferredDate] = useState("");
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
-  const [hotelLocation, setHotelLocation] = useState("");
   const [message, setMessage] = useState("");
   const [website, setWebsite] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -79,7 +78,6 @@ export function ReservationForm({ activities }: ReservationFormProps) {
           preferredDate,
           fullName,
           phone,
-          hotelLocation,
           message,
           website,
         }),
@@ -98,7 +96,6 @@ export function ReservationForm({ activities }: ReservationFormProps) {
       setPreferredDate("");
       setFullName("");
       setPhone("");
-      setHotelLocation("");
       setMessage("");
       setWebsite("");
     } catch {
@@ -260,20 +257,6 @@ export function ReservationForm({ activities }: ReservationFormProps) {
             disabled={submitting}
           />
         </div>
-      </div>
-
-      <div>
-        <label className={labelClass} htmlFor="hotelLocation">
-          Hotel / pickup location
-        </label>
-        <input
-          id="hotelLocation"
-          type="text"
-          className={inputClass}
-          value={hotelLocation}
-          onChange={(e) => setHotelLocation(e.target.value)}
-          disabled={submitting}
-        />
       </div>
 
       <div>
