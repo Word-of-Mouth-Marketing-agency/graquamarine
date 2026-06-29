@@ -8,6 +8,18 @@ const inputClass =
 
 const labelClass = "block text-sm font-medium text-brand-navy";
 
+function getTodayDateInputValue() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function isDateBeforeToday(dateString: string) {
+  return dateString < getTodayDateInputValue();
+}
+
 function pricingLabel(mode: PricingMode): string {
   return mode === "flat" ? "flat boat price" : "per guest";
 }
@@ -63,6 +75,11 @@ export function ReservationForm({ activities }: ReservationFormProps) {
 
     if (!preferredDate) {
       setError("Preferred date is required.");
+      return;
+    }
+
+    if (isDateBeforeToday(preferredDate)) {
+      setError("Preferred date cannot be in the past.");
       return;
     }
 
@@ -223,6 +240,7 @@ export function ReservationForm({ activities }: ReservationFormProps) {
           className={inputClass}
           value={preferredDate}
           onChange={(e) => setPreferredDate(e.target.value)}
+          min={getTodayDateInputValue()}
           required
           disabled={submitting}
         />

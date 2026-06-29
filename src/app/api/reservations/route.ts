@@ -106,6 +106,17 @@ export async function POST(request: Request) {
       errors.push("Preferred date is required.");
     }
 
+    const rawPreferredDate =
+      typeof preferredDate === "string" ? preferredDate.trim() : "";
+
+    if (rawPreferredDate && /^\d{4}-\d{2}-\d{2}$/.test(rawPreferredDate)) {
+      const now = new Date();
+      const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+      if (rawPreferredDate < today) {
+        errors.push("Preferred date cannot be in the past.");
+      }
+    }
+
     if (errors.length > 0) {
       return NextResponse.json({ error: errors.join(" ") }, { status: 400 });
     }
