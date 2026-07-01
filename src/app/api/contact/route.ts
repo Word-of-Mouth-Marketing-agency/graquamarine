@@ -73,6 +73,16 @@ export async function POST(request: Request) {
       );
     }
 
+    if (emailResult.error) {
+      return NextResponse.json(
+        {
+          error:
+            "We could not send your message right now. Please try again later or use WhatsApp.",
+        },
+        { status: 502 }
+      );
+    }
+
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
     console.error("Contact email error:", error);

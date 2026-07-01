@@ -31,6 +31,11 @@ export const metadata: Metadata = {
     locale: "en_US",
     type: "website",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: `${siteConfig.name} | Water Activities in Hurghada`,
+    description: siteConfig.description,
+  },
 };
 
 export default function RootLayout({

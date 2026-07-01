@@ -22,11 +22,15 @@ const adminSelect = {
 } as const;
 
 function getSessionSecret(): string {
-  return (
-    process.env.ADMIN_SESSION_SECRET ||
-    process.env.DATABASE_URL ||
-    ""
-  );
+  const secret = process.env.ADMIN_SESSION_SECRET?.trim();
+
+  if (secret) return secret;
+
+  if (process.env.NODE_ENV === "production") {
+    throw new Error("ADMIN_SESSION_SECRET is required in production.");
+  }
+
+  return process.env.DATABASE_URL || "";
 }
 
 function encodeBase64Url(value: string): string {

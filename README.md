@@ -157,10 +157,10 @@ flat one-time price.
 | `ADMIN_NAME` | Yes for seed | First admin display name |
 | `ADMIN_EMAIL` | Yes for seed | First admin login email |
 | `ADMIN_PASSWORD` | Yes for seed | First admin password, hashed during seed only |
-| `ADMIN_SESSION_SECRET` | Recommended | Secret for signing admin session cookies |
+| `ADMIN_SESSION_SECRET` | Yes in production | Secret for signing admin session cookies |
 | `NEXT_PUBLIC_SITE_URL` | No | Production URL |
 | `RESEND_API_KEY` | No | Resend API key for email notifications |
-| `EMAIL_FROM` | No | Sender address for admin password reset emails |
+| `EMAIL_FROM` | Yes for email | Sender address for reservation, contact, and password reset emails |
 | `RESERVATION_EMAIL_TO` | No | Email to receive reservation alerts |
 | `CONTACT_EMAIL_TO` | No | Email to receive contact form messages (falls back to RESERVATION_EMAIL_TO) |
 
@@ -213,27 +213,23 @@ Then run `npx prisma migrate deploy && npm run dev`.
 
 ## VPS Production Deployment
 
+Production target:
+
+- Path: `/var/www/graquamarine`
+- Internal app port: `3002`
+- Process manager: PM2
+- Web server: LiteSpeed / OpenLiteSpeed virtual host reverse proxy to `http://127.0.0.1:3002`
+- Database: VPS PostgreSQL on `localhost:5432`
+
+Do not use internal port `3000` on the VPS because another Next.js app uses it.
+Do not use `3001` because it is occupied by `docker-proxy`.
+
 ### 1. Server packages
 
-Install on the VPS (Ubuntu/Debian):
-
-```bash
-# Node.js LTS
-curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
-sudo apt-get install -y nodejs
-
-# PostgreSQL
-sudo apt-get install -y postgresql
-
-# Nginx
-sudo apt-get install -y nginx
-
-# PM2
-sudo npm install -g pm2
-
-# Git
-sudo apt-get install -y git
-```
+The current VPS is AlmaLinux/OpenLiteSpeed. Keep the existing LiteSpeed stack.
+Install only missing packages such as Git, Node.js LTS, npm, PM2, and
+PostgreSQL. Do not install Nginx over the existing LiteSpeed listener unless
+the server stack is intentionally changed.
 
 ### 2. PostgreSQL database and user
 
@@ -257,8 +253,8 @@ GRANT ALL ON SCHEMA public TO graquamarine_user;
 ### 3. Clone and configure
 
 ```bash
-git clone <repo-url> /opt/graquamarine
-cd /opt/graquamarine
+git clone https://github.com/Word-of-Mouth-Marketing-agency/graquamarine.git /var/www/graquamarine
+cd /var/www/graquamarine
 ```
 
 Create `.env` in the project root:
@@ -272,7 +268,14 @@ ADMIN_SESSION_SECRET="replace-with-a-long-random-session-secret"
 RESEND_API_KEY=""
 EMAIL_FROM="Graquamarine <onboarding@resend.dev>"
 RESERVATION_EMAIL_TO=""
+CONTACT_EMAIL_TO=""
 NEXT_PUBLIC_SITE_URL="https://graquamarine.com"
+```
+
+After Resend domain verification, change `EMAIL_FROM` to:
+
+```
+EMAIL_FROM="Graquamarine <reservations@graquamarine.com>"
 ```
 
 ### 4. Build and start
@@ -281,9 +284,9 @@ NEXT_PUBLIC_SITE_URL="https://graquamarine.com"
 npm install
 npx prisma generate
 npx prisma migrate deploy
-npx prisma db seed
+npm run db:seed
 npm run build
-pm2 start npm --name graquamarine -- start
+PORT=3002 pm2 start npm --name graquamarine -- start
 pm2 save
 pm2 startup
 ```
@@ -291,41 +294,44 @@ pm2 startup
 The initial migration is committed under `prisma/migrations`, so VPS deploys
 should use `npx prisma migrate deploy`.
 
-### 5. Nginx reverse proxy
+### 5. LiteSpeed reverse proxy
 
-Create `/etc/nginx/sites-available/graquamarine`:
+Create a dedicated LiteSpeed virtual host for:
 
-```nginx
-server {
-    server_name graquamarine.com www.graquamarine.com;
+- `graquamarine.com`
+- `www.graquamarine.com`
 
-    location / {
-        proxy_pass http://127.0.0.1:3000;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
-    }
-}
+The vhost should proxy `/` to:
+
+```text
+http://127.0.0.1:3002
 ```
 
-Enable and reload:
-
-```bash
-sudo ln -s /etc/nginx/sites-available/graquamarine /etc/nginx/sites-enabled/
-sudo nginx -t
-sudo systemctl reload nginx
-```
+Back up `/usr/local/lsws/conf/httpd_config.conf` before adding listener maps
+or vhost blocks. Do not overwrite unrelated virtual hosts.
 
 ### 6. SSL
 
+Issue SSL only after DNS for both `graquamarine.com` and
+`www.graquamarine.com` points to the VPS. Use the server's existing LiteSpeed
+/ CyberPanel SSL workflow, then verify HTTPS loads the app.
+
+### 7. Backups
+
+Create a protected backup directory:
+
 ```bash
-sudo apt-get install -y certbot python3-certbot-nginx
-sudo certbot --nginx -d graquamarine.com -d www.graquamarine.com
+mkdir -p /var/backups/graquamarine
+chmod 700 /var/backups/graquamarine
 ```
 
-### 7. Production warnings
+Manual backup command:
+
+```bash
+pg_dump graquamarine > /var/backups/graquamarine/graquamarine-$(date +%F).sql
+```
+
+### 8. Production warnings
 
 - Do not commit `.env` or `prisma/dev.db`.
 - Use a strong `ADMIN_PASSWORD` for the first seed and a strong
@@ -333,19 +339,20 @@ sudo certbot --nginx -d graquamarine.com -d www.graquamarine.com
 - Set up PostgreSQL backups (`pg_dump` cron job).
 - Consider CAPTCHA before heavy traffic if spam increases.
 - Configure Resend DNS records if using email notifications.
+- Set `NEXT_PUBLIC_SITE_URL=https://graquamarine.com`.
 - Set `NODE_ENV=production` in the PM2 environment.
 
-### 8. Deploying updates
+### 9. Deploying updates
 
 ```bash
-cd /opt/graquamarine
-git pull
+cd /var/www/graquamarine
+git pull origin master
 npm install
 npx prisma generate
 npx prisma migrate deploy
-npx prisma db seed
+npm run db:seed
 npm run build
-pm2 restart graquamarine
+PORT=3002 pm2 restart graquamarine --update-env
 ```
 
 ## Database

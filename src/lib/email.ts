@@ -9,6 +9,13 @@ type PasswordResetEmailResult = {
   skipped: boolean;
 };
 
+function getSiteUrl(): string {
+  return (
+    process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/$/, "") ||
+    "https://graquamarine.com"
+  );
+}
+
 export async function sendPasswordResetEmail({
   to,
   name,
@@ -86,7 +93,7 @@ type ReservationNotificationResult = {
 function buildReservationTextHtml(input: ReservationNotificationInput) {
   const hotel = input.hotelLocation || "Not provided";
   const notes = input.message || "Not provided";
-  const adminUrl = "https://graquamarine.com/admin";
+  const adminUrl = `${getSiteUrl()}/admin`;
 
   const text = [
     `New Graquamarine Reservation`,
@@ -271,7 +278,7 @@ export async function sendContactNotification(
     ``,
     `<p style="color: #888; font-size: 12px;">Submitted: ${escapeHtml(submittedAt)}</p>`,
     ``,
-    `<a href="https://graquamarine.com/admin" style="display: inline-block; background: #01A3CB; color: #fff; padding: 12px 24px; border-radius: 9999px; text-decoration: none; font-weight: 600; font-size: 14px;">View Admin Dashboard</a>`,
+    `<a href="${getSiteUrl()}/admin" style="display: inline-block; background: #01A3CB; color: #fff; padding: 12px 24px; border-radius: 9999px; text-decoration: none; font-weight: 600; font-size: 14px;">View Admin Dashboard</a>`,
     ``,
     `<hr style="border: none; border-top: 1px solid #eee; margin: 32px 0 12px;" />`,
     `<p style="color: #999; font-size: 11px;">Graquamarine Contact Notification</p>`,
