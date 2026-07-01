@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ActivityImage } from "@/components/activities/ActivityImage";
+import { BookingScrollButton } from "@/components/activities/BookingScrollButton";
+import { PendingActivityScroller } from "@/components/activities/PendingActivityScroller";
 import { ReservationForm } from "@/components/activities/ReservationForm";
 import { PageHero } from "@/components/ui/PageHero";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -26,14 +28,16 @@ export default async function ActivitiesPage() {
 
   return (
     <div className="bg-white">
+      <PendingActivityScroller />
       <PageHero title="Activities" />
 
       <section className="bg-white px-4 py-16 sm:py-20">
         <div className="mx-auto max-w-5xl space-y-12">
           {activities.map((activity, i) => (
             <article
+              id={activity.slug}
               key={activity.slug}
-              className={`grid gap-6 md:grid-cols-5 md:gap-10 ${
+              className={`scroll-mt-28 grid gap-6 md:grid-cols-5 md:gap-10 ${
                 i % 2 === 1 ? "md:flex-row-reverse" : ""
               }`}
             >
@@ -91,13 +95,18 @@ export default async function ActivitiesPage() {
                     </li>
                   ))}
                 </ul>
+                <div className="mt-6">
+                  <BookingScrollButton className="inline-flex h-11 items-center justify-center rounded-full bg-brand-aqua px-6 text-sm font-semibold text-white transition hover:bg-brand-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-aqua focus-visible:ring-offset-2">
+                    Booking
+                  </BookingScrollButton>
+                </div>
               </div>
             </article>
           ))}
         </div>
       </section>
 
-      <section id="reservation" className="bg-white px-4 pb-16 sm:pb-20">
+      <section id="reservation" className="scroll-mt-28 bg-white px-4 pb-16 sm:pb-20">
         <div className="mx-auto max-w-3xl">
           <SectionHeading
             label="Make a Reservation"

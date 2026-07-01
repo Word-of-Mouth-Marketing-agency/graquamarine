@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ActivityImage } from "@/components/activities/ActivityImage";
+import { ActivityReserveLink } from "@/components/activities/ActivityReserveLink";
 import { HeroSlideshow } from "@/components/hero/HeroSlideshow";
 import { GalleryCarousel } from "@/components/gallery/GalleryCarousel";
 import { getPublicGalleryImages } from "@/lib/gallery-images";
@@ -160,12 +161,12 @@ export default async function Home() {
                   </p>
                   <div className="mt-auto pt-5">
                     {activity.isActive ? (
-                      <Link
-                        href="/activities"
+                      <ActivityReserveLink
+                        slug={activity.slug}
                         className="inline-flex h-11 w-full items-center justify-center rounded-full bg-brand-aqua text-sm font-semibold text-white transition hover:bg-brand-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-aqua focus-visible:ring-offset-2"
                       >
                         Reserve
-                      </Link>
+                      </ActivityReserveLink>
                     ) : (
                       <span className="inline-flex h-11 w-full items-center justify-center rounded-full bg-brand-navy/10 text-sm font-semibold text-brand-navy/45">
                         Unavailable
